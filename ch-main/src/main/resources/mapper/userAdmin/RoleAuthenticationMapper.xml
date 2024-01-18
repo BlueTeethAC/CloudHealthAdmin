@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.LW1.userAdmin.roleProcess.mapper.RoleAuthenticationMapper">
+    
+    <resultMap type="RoleAuthentication" id="RoleAuthenticationResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="role"    column="role"    />
+        <result property="infoUrl"    column="info_url"    />
+        <result property="status"    column="status"    />
+        <result property="adminId"    column="admin_id"    />
+    </resultMap>
+
+    <sql id="selectRoleAuthenticationVo">
+        select id, user_id, role, info_url, status, admin_id from ch_role_authentication
+    </sql>
+
+    <select id="selectRoleAuthenticationList" parameterType="RoleAuthentication" resultMap="RoleAuthenticationResult">
+        <include refid="selectRoleAuthenticationVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="role != null "> and role = #{role}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="adminId != null "> and admin_id = #{adminId}</if>
+        </where>
+    </select>
+    
+    <select id="selectRoleAuthenticationById" parameterType="Long" resultMap="RoleAuthenticationResult">
+        <include refid="selectRoleAuthenticationVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertRoleAuthentication" parameterType="RoleAuthentication" useGeneratedKeys="true" keyProperty="id">
+        insert into ch_role_authentication
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="role != null">role,</if>
+            <if test="infoUrl != null and infoUrl != ''">info_url,</if>
+            <if test="status != null">status,</if>
+            <if test="adminId != null">admin_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="role != null">#{role},</if>
+            <if test="infoUrl != null and infoUrl != ''">#{infoUrl},</if>
+            <if test="status != null">#{status},</if>
+            <if test="adminId != null">#{adminId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRoleAuthentication" parameterType="RoleAuthentication">
+        update ch_role_authentication
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="role != null">role = #{role},</if>
+            <if test="infoUrl != null and infoUrl != ''">info_url = #{infoUrl},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="adminId != null">admin_id = #{adminId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRoleAuthenticationById" parameterType="Long">
+        delete from ch_role_authentication where id = #{id}
+    </delete>
+
+    <delete id="deleteRoleAuthenticationByIds" parameterType="String">
+        delete from ch_role_authentication where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

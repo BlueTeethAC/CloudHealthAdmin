@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.LW1.userAdmin.roleInfo.mapper.RoleinfoMapper">
+    
+    <resultMap type="Roleinfo" id="RoleinfoResult">
+        <result property="infoId"    column="info_id"    />
+        <result property="roleId"    column="role_id"    />
+        <result property="roleName"    column="role_name"    />
+    </resultMap>
+
+    <sql id="selectRoleinfoVo">
+        select info_id, role_id, role_name from ch_roleinfo
+    </sql>
+
+    <select id="selectRoleinfoList" parameterType="Roleinfo" resultMap="RoleinfoResult">
+        <include refid="selectRoleinfoVo"/>
+        <where>  
+            <if test="infoId != null "> and info_id = #{infoId}</if>
+            <if test="roleId != null "> and role_id = #{roleId}</if>
+            <if test="roleName != null  and roleName != ''"> and role_name like concat('%', #{roleName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectRoleinfoByInfoId" parameterType="Long" resultMap="RoleinfoResult">
+        <include refid="selectRoleinfoVo"/>
+        where info_id = #{infoId}
+    </select>
+        
+    <insert id="insertRoleinfo" parameterType="Roleinfo" useGeneratedKeys="true" keyProperty="infoId">
+        insert into ch_roleinfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="roleId != null">role_id,</if>
+            <if test="roleName != null and roleName != ''">role_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="roleId != null">#{roleId},</if>
+            <if test="roleName != null and roleName != ''">#{roleName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRoleinfo" parameterType="Roleinfo">
+        update ch_roleinfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="roleId != null">role_id = #{roleId},</if>
+            <if test="roleName != null and roleName != ''">role_name = #{roleName},</if>
+        </trim>
+        where info_id = #{infoId}
+    </update>
+
+    <delete id="deleteRoleinfoByInfoId" parameterType="Long">
+        delete from ch_roleinfo where info_id = #{infoId}
+    </delete>
+
+    <delete id="deleteRoleinfoByInfoIds" parameterType="String">
+        delete from ch_roleinfo where info_id in 
+        <foreach item="infoId" collection="array" open="(" separator="," close=")">
+            #{infoId}
+        </foreach>
+    </delete>
+</mapper>
