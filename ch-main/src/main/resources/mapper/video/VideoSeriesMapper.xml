@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.LW1.video.seriesInfo.mapper.VideoSeriesMapper">
+    
+    <resultMap type="VideoSeries" id="VideoSeriesResult">
+        <result property="seriesId"    column="series_id"    />
+        <result property="seriesName"    column="series_name"    />
+        <result property="seriesCreaterId"    column="series_creater_id"    />
+        <result property="seriesClassify"    column="series_classify"    />
+        <result property="seriesIntroduction"    column="series_introduction"    />
+        <result property="seriesPhoto"    column="series_photo"    />
+        <result property="seriesCreater"    column="series_creater"    />
+        <result property="seriesUploadDate"    column="series_upload_date"    />
+        <result property="seriesFree"    column="series_free"    />
+        <result property="seriesPrice"    column="series_price"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectVideoSeriesVo">
+        select series_id, series_name, series_creater_id, series_classify, series_introduction, series_photo, series_creater, series_upload_date, series_free, series_price, status from ch_video_series
+    </sql>
+
+    <select id="selectVideoSeriesList" parameterType="VideoSeries" resultMap="VideoSeriesResult">
+        <include refid="selectVideoSeriesVo"/>
+        <where>  
+            <if test="seriesId != null "> and series_id = #{seriesId}</if>
+            <if test="seriesName != null  and seriesName != ''"> and series_name like concat('%', #{seriesName}, '%')</if>
+            <if test="seriesCreaterId != null "> and series_creater_id = #{seriesCreaterId}</if>
+            <if test="seriesClassify != null "> and series_classify = #{seriesClassify}</if>
+            <if test="seriesIntroduction != null  and seriesIntroduction != ''"> and series_introduction = #{seriesIntroduction}</if>
+            <if test="seriesPhoto != null  and seriesPhoto != ''"> and series_photo = #{seriesPhoto}</if>
+            <if test="seriesCreater != null "> and series_creater = #{seriesCreater}</if>
+            <if test="seriesUploadDate != null "> and series_upload_date = #{seriesUploadDate}</if>
+            <if test="seriesFree != null "> and series_free = #{seriesFree}</if>
+            <if test="seriesPrice != null "> and series_price = #{seriesPrice}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectVideoSeriesBySeriesId" parameterType="Long" resultMap="VideoSeriesResult">
+        <include refid="selectVideoSeriesVo"/>
+        where series_id = #{seriesId}
+    </select>
+        
+    <insert id="insertVideoSeries" parameterType="VideoSeries" useGeneratedKeys="true" keyProperty="seriesId">
+        insert into ch_video_series
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="seriesName != null and seriesName != ''">series_name,</if>
+            <if test="seriesCreaterId != null">series_creater_id,</if>
+            <if test="seriesClassify != null">series_classify,</if>
+            <if test="seriesIntroduction != null">series_introduction,</if>
+            <if test="seriesPhoto != null and seriesPhoto != ''">series_photo,</if>
+            <if test="seriesCreater != null">series_creater,</if>
+            <if test="seriesUploadDate != null">series_upload_date,</if>
+            <if test="seriesFree != null">series_free,</if>
+            <if test="seriesPrice != null">series_price,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="seriesName != null and seriesName != ''">#{seriesName},</if>
+            <if test="seriesCreaterId != null">#{seriesCreaterId},</if>
+            <if test="seriesClassify != null">#{seriesClassify},</if>
+            <if test="seriesIntroduction != null">#{seriesIntroduction},</if>
+            <if test="seriesPhoto != null and seriesPhoto != ''">#{seriesPhoto},</if>
+            <if test="seriesCreater != null">#{seriesCreater},</if>
+            <if test="seriesUploadDate != null">#{seriesUploadDate},</if>
+            <if test="seriesFree != null">#{seriesFree},</if>
+            <if test="seriesPrice != null">#{seriesPrice},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateVideoSeries" parameterType="VideoSeries">
+        update ch_video_series
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="seriesName != null and seriesName != ''">series_name = #{seriesName},</if>
+            <if test="seriesCreaterId != null">series_creater_id = #{seriesCreaterId},</if>
+            <if test="seriesClassify != null">series_classify = #{seriesClassify},</if>
+            <if test="seriesIntroduction != null">series_introduction = #{seriesIntroduction},</if>
+            <if test="seriesPhoto != null and seriesPhoto != ''">series_photo = #{seriesPhoto},</if>
+            <if test="seriesCreater != null">series_creater = #{seriesCreater},</if>
+            <if test="seriesUploadDate != null">series_upload_date = #{seriesUploadDate},</if>
+            <if test="seriesFree != null">series_free = #{seriesFree},</if>
+            <if test="seriesPrice != null">series_price = #{seriesPrice},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where series_id = #{seriesId}
+    </update>
+
+    <delete id="deleteVideoSeriesBySeriesId" parameterType="Long">
+        delete from ch_video_series where series_id = #{seriesId}
+    </delete>
+
+    <delete id="deleteVideoSeriesBySeriesIds" parameterType="String">
+        delete from ch_video_series where series_id in 
+        <foreach item="seriesId" collection="array" open="(" separator="," close=")">
+            #{seriesId}
+        </foreach>
+    </delete>
+</mapper>

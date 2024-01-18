@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.LW1.video.seriesSubscribe.mapper.SeriesSubscribeMapper">
+    
+    <resultMap type="SeriesSubscribe" id="SeriesSubscribeResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="seriesId"    column="series_id"    />
+    </resultMap>
+
+    <sql id="selectSeriesSubscribeVo">
+        select id, user_id, series_id from ch_series_subscribe
+    </sql>
+
+    <select id="selectSeriesSubscribeList" parameterType="SeriesSubscribe" resultMap="SeriesSubscribeResult">
+        <include refid="selectSeriesSubscribeVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="seriesId != null "> and series_id = #{seriesId}</if>
+        </where>
+    </select>
+    
+    <select id="selectSeriesSubscribeById" parameterType="Long" resultMap="SeriesSubscribeResult">
+        <include refid="selectSeriesSubscribeVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSeriesSubscribe" parameterType="SeriesSubscribe" useGeneratedKeys="true" keyProperty="id">
+        insert into ch_series_subscribe
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="seriesId != null">series_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="seriesId != null">#{seriesId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSeriesSubscribe" parameterType="SeriesSubscribe">
+        update ch_series_subscribe
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="seriesId != null">series_id = #{seriesId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSeriesSubscribeById" parameterType="Long">
+        delete from ch_series_subscribe where id = #{id}
+    </delete>
+
+    <delete id="deleteSeriesSubscribeByIds" parameterType="String">
+        delete from ch_series_subscribe where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

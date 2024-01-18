@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.LW1.video.videoInfo.mapper.VideoInfoMapper">
+    
+    <resultMap type="VideoInfo" id="VideoInfoResult">
+        <result property="videoId"    column="video_id"    />
+        <result property="videoModel"    column="video_model"    />
+        <result property="videoCalssify"    column="video_calssify"    />
+        <result property="videoPath"    column="video_path"    />
+        <result property="videoSeries"    column="video_series"    />
+        <result property="videoName"    column="video_name"    />
+        <result property="videoPhoto"    column="video_photo"    />
+        <result property="videoUploadUser"    column="video_upload_user"    />
+        <result property="videoUploadDate"    column="video_upload_date"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectVideoInfoVo">
+        select video_id, video_model, video_calssify, video_path, video_series, video_name, video_photo, video_upload_user, video_upload_date, status from ch_video_info
+    </sql>
+
+    <select id="selectVideoInfoList" parameterType="VideoInfo" resultMap="VideoInfoResult">
+        <include refid="selectVideoInfoVo"/>
+        <where>  
+            <if test="videoModel != null "> and video_model = #{videoModel}</if>
+            <if test="videoCalssify != null "> and video_calssify = #{videoCalssify}</if>
+            <if test="videoSeries != null "> and video_series = #{videoSeries}</if>
+            <if test="videoName != null  and videoName != ''"> and video_name like concat('%', #{videoName}, '%')</if>
+            <if test="videoUploadUser != null "> and video_upload_user = #{videoUploadUser}</if>
+            <if test="videoUploadDate != null "> and video_upload_date = #{videoUploadDate}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectVideoInfoByVideoId" parameterType="Long" resultMap="VideoInfoResult">
+        <include refid="selectVideoInfoVo"/>
+        where video_id = #{videoId}
+    </select>
+        
+    <insert id="insertVideoInfo" parameterType="VideoInfo" useGeneratedKeys="true" keyProperty="videoId">
+        insert into ch_video_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="videoModel != null">video_model,</if>
+            <if test="videoCalssify != null">video_calssify,</if>
+            <if test="videoPath != null and videoPath != ''">video_path,</if>
+            <if test="videoSeries != null">video_series,</if>
+            <if test="videoName != null and videoName != ''">video_name,</if>
+            <if test="videoPhoto != null and videoPhoto != ''">video_photo,</if>
+            <if test="videoUploadUser != null">video_upload_user,</if>
+            <if test="videoUploadDate != null">video_upload_date,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="videoModel != null">#{videoModel},</if>
+            <if test="videoCalssify != null">#{videoCalssify},</if>
+            <if test="videoPath != null and videoPath != ''">#{videoPath},</if>
+            <if test="videoSeries != null">#{videoSeries},</if>
+            <if test="videoName != null and videoName != ''">#{videoName},</if>
+            <if test="videoPhoto != null and videoPhoto != ''">#{videoPhoto},</if>
+            <if test="videoUploadUser != null">#{videoUploadUser},</if>
+            <if test="videoUploadDate != null">#{videoUploadDate},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateVideoInfo" parameterType="VideoInfo">
+        update ch_video_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="videoModel != null">video_model = #{videoModel},</if>
+            <if test="videoCalssify != null">video_calssify = #{videoCalssify},</if>
+            <if test="videoPath != null and videoPath != ''">video_path = #{videoPath},</if>
+            <if test="videoSeries != null">video_series = #{videoSeries},</if>
+            <if test="videoName != null and videoName != ''">video_name = #{videoName},</if>
+            <if test="videoPhoto != null and videoPhoto != ''">video_photo = #{videoPhoto},</if>
+            <if test="videoUploadUser != null">video_upload_user = #{videoUploadUser},</if>
+            <if test="videoUploadDate != null">video_upload_date = #{videoUploadDate},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where video_id = #{videoId}
+    </update>
+
+    <delete id="deleteVideoInfoByVideoId" parameterType="Long">
+        delete from ch_video_info where video_id = #{videoId}
+    </delete>
+
+    <delete id="deleteVideoInfoByVideoIds" parameterType="String">
+        delete from ch_video_info where video_id in 
+        <foreach item="videoId" collection="array" open="(" separator="," close=")">
+            #{videoId}
+        </foreach>
+    </delete>
+</mapper>
