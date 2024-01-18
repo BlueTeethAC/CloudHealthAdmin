@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.LW1.healthConsult.bodyInfo.mapper.BodyinfoMapper">
+    
+    <resultMap type="Bodyinfo" id="BodyinfoResult">
+        <result property="infoId"    column="info_id"    />
+        <result property="inputDate"    column="inputDate"    />
+        <result property="userId"    column="user_id"    />
+        <result property="height"    column="height"    />
+        <result property="weight"    column="weight"    />
+        <result property="heartRule"    column="heart_rule"    />
+        <result property="elevatedBloodPressure"    column="elevated_blood_pressure"    />
+        <result property="lowerBloodPressure"    column="lower_blood_pressure"    />
+        <result property="bloodSugar"    column="blood_sugar"    />
+        <result property="sex"    column="sex"    />
+        <result property="waist"    column="waist"    />
+        <result property="hip"    column="hip"    />
+        <result property="upperArmCircumference"    column="upper_arm_circumference"    />
+        <result property="bodyFat"    column="body_fat"    />
+        <result property="lactone"    column="lactone"    />
+    </resultMap>
+
+    <sql id="selectBodyinfoVo">
+        select info_id, inputDate, user_id, height, weight, heart_rule, elevated_blood_pressure, lower_blood_pressure, blood_sugar, sex, waist, hip, upper_arm_circumference, body_fat, lactone from ch_bodyinfo
+    </sql>
+
+    <select id="selectBodyinfoList" parameterType="Bodyinfo" resultMap="BodyinfoResult">
+        <include refid="selectBodyinfoVo"/>
+        <where>  
+            <if test="infoId != null "> and info_id = #{infoId}</if>
+            <if test="inputDate != null "> and inputDate = #{inputDate}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="height != null "> and height = #{height}</if>
+            <if test="weight != null "> and weight = #{weight}</if>
+            <if test="heartRule != null "> and heart_rule = #{heartRule}</if>
+            <if test="elevatedBloodPressure != null "> and elevated_blood_pressure = #{elevatedBloodPressure}</if>
+            <if test="lowerBloodPressure != null "> and lower_blood_pressure = #{lowerBloodPressure}</if>
+            <if test="bloodSugar != null "> and blood_sugar = #{bloodSugar}</if>
+            <if test="sex != null "> and sex = #{sex}</if>
+            <if test="waist != null "> and waist = #{waist}</if>
+            <if test="hip != null "> and hip = #{hip}</if>
+            <if test="upperArmCircumference != null "> and upper_arm_circumference = #{upperArmCircumference}</if>
+            <if test="bodyFat != null "> and body_fat = #{bodyFat}</if>
+            <if test="lactone != null "> and lactone = #{lactone}</if>
+        </where>
+    </select>
+    
+    <select id="selectBodyinfoByInfoId" parameterType="Long" resultMap="BodyinfoResult">
+        <include refid="selectBodyinfoVo"/>
+        where info_id = #{infoId}
+    </select>
+        
+    <insert id="insertBodyinfo" parameterType="Bodyinfo" useGeneratedKeys="true" keyProperty="infoId">
+        insert into ch_bodyinfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="inputDate != null">inputDate,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="height != null">height,</if>
+            <if test="weight != null">weight,</if>
+            <if test="heartRule != null">heart_rule,</if>
+            <if test="elevatedBloodPressure != null">elevated_blood_pressure,</if>
+            <if test="lowerBloodPressure != null">lower_blood_pressure,</if>
+            <if test="bloodSugar != null">blood_sugar,</if>
+            <if test="sex != null">sex,</if>
+            <if test="waist != null">waist,</if>
+            <if test="hip != null">hip,</if>
+            <if test="upperArmCircumference != null">upper_arm_circumference,</if>
+            <if test="bodyFat != null">body_fat,</if>
+            <if test="lactone != null">lactone,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="inputDate != null">#{inputDate},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="height != null">#{height},</if>
+            <if test="weight != null">#{weight},</if>
+            <if test="heartRule != null">#{heartRule},</if>
+            <if test="elevatedBloodPressure != null">#{elevatedBloodPressure},</if>
+            <if test="lowerBloodPressure != null">#{lowerBloodPressure},</if>
+            <if test="bloodSugar != null">#{bloodSugar},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="waist != null">#{waist},</if>
+            <if test="hip != null">#{hip},</if>
+            <if test="upperArmCircumference != null">#{upperArmCircumference},</if>
+            <if test="bodyFat != null">#{bodyFat},</if>
+            <if test="lactone != null">#{lactone},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBodyinfo" parameterType="Bodyinfo">
+        update ch_bodyinfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="inputDate != null">inputDate = #{inputDate},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="height != null">height = #{height},</if>
+            <if test="weight != null">weight = #{weight},</if>
+            <if test="heartRule != null">heart_rule = #{heartRule},</if>
+            <if test="elevatedBloodPressure != null">elevated_blood_pressure = #{elevatedBloodPressure},</if>
+            <if test="lowerBloodPressure != null">lower_blood_pressure = #{lowerBloodPressure},</if>
+            <if test="bloodSugar != null">blood_sugar = #{bloodSugar},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="waist != null">waist = #{waist},</if>
+            <if test="hip != null">hip = #{hip},</if>
+            <if test="upperArmCircumference != null">upper_arm_circumference = #{upperArmCircumference},</if>
+            <if test="bodyFat != null">body_fat = #{bodyFat},</if>
+            <if test="lactone != null">lactone = #{lactone},</if>
+        </trim>
+        where info_id = #{infoId}
+    </update>
+
+    <delete id="deleteBodyinfoByInfoId" parameterType="Long">
+        delete from ch_bodyinfo where info_id = #{infoId}
+    </delete>
+
+    <delete id="deleteBodyinfoByInfoIds" parameterType="String">
+        delete from ch_bodyinfo where info_id in 
+        <foreach item="infoId" collection="array" open="(" separator="," close=")">
+            #{infoId}
+        </foreach>
+    </delete>
+</mapper>
