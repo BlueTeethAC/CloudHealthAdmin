@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.LW1.healthConsult.consultInfo.mapper.ConsultationformMapper">
+    
+    <resultMap type="Consultationform" id="ConsultationformResult">
+        <result property="ConsultationFormId"    column="ConsultationFormId"    />
+        <result property="bodyinfoId"    column="bodyinfo_id"    />
+        <result property="score"    column="score"    />
+        <result property="inputDate"    column="inputDate"    />
+        <result property="userId"    column="user_id"    />
+        <result property="state"    column="state"    />
+        <result property="questionnaireRecordings"    column="questionnaire_recordings"    />
+    </resultMap>
+
+    <sql id="selectConsultationformVo">
+        select ConsultationFormId, bodyinfo_id, score, inputDate, user_id, state, questionnaire_recordings from ch_consultationform
+    </sql>
+
+    <select id="selectConsultationformList" parameterType="Consultationform" resultMap="ConsultationformResult">
+        <include refid="selectConsultationformVo"/>
+        <where>  
+            <if test="ConsultationFormId != null "> and ConsultationFormId = #{ConsultationFormId}</if>
+            <if test="bodyinfoId != null "> and bodyinfo_id = #{bodyinfoId}</if>
+            <if test="score != null "> and score = #{score}</if>
+            <if test="inputDate != null "> and inputDate = #{inputDate}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="state != null "> and state = #{state}</if>
+            <if test="questionnaireRecordings != null  and questionnaireRecordings != ''"> and questionnaire_recordings = #{questionnaireRecordings}</if>
+        </where>
+    </select>
+    
+    <select id="selectConsultationformByConsultationFormId" parameterType="Long" resultMap="ConsultationformResult">
+        <include refid="selectConsultationformVo"/>
+        where ConsultationFormId = #{ConsultationFormId}
+    </select>
+        
+    <insert id="insertConsultationform" parameterType="Consultationform" useGeneratedKeys="true" keyProperty="ConsultationFormId">
+        insert into ch_consultationform
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bodyinfoId != null">bodyinfo_id,</if>
+            <if test="score != null">score,</if>
+            <if test="inputDate != null">inputDate,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="state != null">state,</if>
+            <if test="questionnaireRecordings != null">questionnaire_recordings,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bodyinfoId != null">#{bodyinfoId},</if>
+            <if test="score != null">#{score},</if>
+            <if test="inputDate != null">#{inputDate},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="state != null">#{state},</if>
+            <if test="questionnaireRecordings != null">#{questionnaireRecordings},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConsultationform" parameterType="Consultationform">
+        update ch_consultationform
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="bodyinfoId != null">bodyinfo_id = #{bodyinfoId},</if>
+            <if test="score != null">score = #{score},</if>
+            <if test="inputDate != null">inputDate = #{inputDate},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="state != null">state = #{state},</if>
+            <if test="questionnaireRecordings != null">questionnaire_recordings = #{questionnaireRecordings},</if>
+        </trim>
+        where ConsultationFormId = #{ConsultationFormId}
+    </update>
+
+    <delete id="deleteConsultationformByConsultationFormId" parameterType="Long">
+        delete from ch_consultationform where ConsultationFormId = #{ConsultationFormId}
+    </delete>
+
+    <delete id="deleteConsultationformByConsultationFormIds" parameterType="String">
+        delete from ch_consultationform where ConsultationFormId in 
+        <foreach item="ConsultationFormId" collection="array" open="(" separator="," close=")">
+            #{ConsultationFormId}
+        </foreach>
+    </delete>
+</mapper>
