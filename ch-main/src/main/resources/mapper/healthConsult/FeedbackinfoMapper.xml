@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.LW1.healthConsult.feedBackInfo.mapper.FeedbackinfoMapper">
+    
+    <resultMap type="Feedbackinfo" id="FeedbackinfoResult">
+        <result property="feedbackinfoId"    column="FeedBackInfo_id"    />
+        <result property="ConsultationFormId"    column="ConsultationFormId"    />
+        <result property="replyPersonId"    column="replyPersonId"    />
+        <result property="replyInfo"    column="replyInfo"    />
+    </resultMap>
+
+    <sql id="selectFeedbackinfoVo">
+        select FeedBackInfo_id, ConsultationFormId, replyPersonId, replyInfo from ch_feedbackinfo
+    </sql>
+
+    <select id="selectFeedbackinfoList" parameterType="Feedbackinfo" resultMap="FeedbackinfoResult">
+        <include refid="selectFeedbackinfoVo"/>
+        <where>  
+            <if test="feedbackinfoId != null "> and FeedBackInfo_id = #{feedbackinfoId}</if>
+            <if test="ConsultationFormId != null "> and ConsultationFormId = #{ConsultationFormId}</if>
+            <if test="replyPersonId != null "> and replyPersonId = #{replyPersonId}</if>
+        </where>
+    </select>
+    
+    <select id="selectFeedbackinfoByFeedbackinfoId" parameterType="Long" resultMap="FeedbackinfoResult">
+        <include refid="selectFeedbackinfoVo"/>
+        where FeedBackInfo_id = #{feedbackinfoId}
+    </select>
+        
+    <insert id="insertFeedbackinfo" parameterType="Feedbackinfo" useGeneratedKeys="true" keyProperty="feedbackinfoId">
+        insert into ch_feedbackinfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ConsultationFormId != null">ConsultationFormId,</if>
+            <if test="replyPersonId != null">replyPersonId,</if>
+            <if test="replyInfo != null and replyInfo != ''">replyInfo,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ConsultationFormId != null">#{ConsultationFormId},</if>
+            <if test="replyPersonId != null">#{replyPersonId},</if>
+            <if test="replyInfo != null and replyInfo != ''">#{replyInfo},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFeedbackinfo" parameterType="Feedbackinfo">
+        update ch_feedbackinfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="ConsultationFormId != null">ConsultationFormId = #{ConsultationFormId},</if>
+            <if test="replyPersonId != null">replyPersonId = #{replyPersonId},</if>
+            <if test="replyInfo != null and replyInfo != ''">replyInfo = #{replyInfo},</if>
+        </trim>
+        where FeedBackInfo_id = #{feedbackinfoId}
+    </update>
+
+    <delete id="deleteFeedbackinfoByFeedbackinfoId" parameterType="Long">
+        delete from ch_feedbackinfo where FeedBackInfo_id = #{feedbackinfoId}
+    </delete>
+
+    <delete id="deleteFeedbackinfoByFeedbackinfoIds" parameterType="String">
+        delete from ch_feedbackinfo where FeedBackInfo_id in 
+        <foreach item="feedbackinfoId" collection="array" open="(" separator="," close=")">
+            #{feedbackinfoId}
+        </foreach>
+    </delete>
+</mapper>
