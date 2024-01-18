@@ -61,6 +61,13 @@
             <artifactId>ruoyi-generator</artifactId>
         </dependency>
 
+        <!-- 云健康主模块 -->
+        <dependency>
+            <groupId>com.LW1</groupId>
+            <artifactId>ch-main</artifactId>
+            <version>3.8.6</version>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -170,6 +170,14 @@
                 <version>${ruoyi.version}</version>
             </dependency>
 
+
+            <!-- 云健康主模块 -->
+            <dependency>
+                <groupId>com.LW1</groupId>
+                <artifactId>ch-main</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
