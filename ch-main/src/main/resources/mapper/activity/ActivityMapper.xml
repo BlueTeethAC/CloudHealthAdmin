@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.LW1.activity.activityInfo.mapper.ActivityMapper">
+    
+    <resultMap type="Activity" id="ActivityResult">
+        <result property="activityId"    column="activity_id"    />
+        <result property="activityName"    column="activity_name"    />
+        <result property="activityDate"    column="activity_date"    />
+        <result property="activityClassify"    column="activity_classify"    />
+        <result property="isFree"    column="is_free"    />
+        <result property="activityPrice"    column="activity_price"    />
+        <result property="activityPlace"    column="activity_place"    />
+        <result property="publishId"    column="publish_id"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectActivityVo">
+        select activity_id, activity_name, activity_date, activity_classify, is_free, activity_price, activity_place, publish_id, status from ch_activity
+    </sql>
+
+    <select id="selectActivityList" parameterType="Activity" resultMap="ActivityResult">
+        <include refid="selectActivityVo"/>
+        <where>  
+            <if test="activityId != null "> and activity_id = #{activityId}</if>
+            <if test="activityName != null  and activityName != ''"> and activity_name like concat('%', #{activityName}, '%')</if>
+            <if test="activityDate != null "> and activity_date = #{activityDate}</if>
+            <if test="activityClassify != null "> and activity_classify = #{activityClassify}</if>
+            <if test="isFree != null "> and is_free = #{isFree}</if>
+            <if test="activityPrice != null "> and activity_price = #{activityPrice}</if>
+            <if test="activityPlace != null  and activityPlace != ''"> and activity_place = #{activityPlace}</if>
+            <if test="publishId != null "> and publish_id = #{publishId}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectActivityByActivityId" parameterType="Long" resultMap="ActivityResult">
+        <include refid="selectActivityVo"/>
+        where activity_id = #{activityId}
+    </select>
+        
+    <insert id="insertActivity" parameterType="Activity" useGeneratedKeys="true" keyProperty="activityId">
+        insert into ch_activity
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="activityName != null and activityName != ''">activity_name,</if>
+            <if test="activityDate != null">activity_date,</if>
+            <if test="activityClassify != null">activity_classify,</if>
+            <if test="isFree != null">is_free,</if>
+            <if test="activityPrice != null">activity_price,</if>
+            <if test="activityPlace != null and activityPlace != ''">activity_place,</if>
+            <if test="publishId != null">publish_id,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="activityName != null and activityName != ''">#{activityName},</if>
+            <if test="activityDate != null">#{activityDate},</if>
+            <if test="activityClassify != null">#{activityClassify},</if>
+            <if test="isFree != null">#{isFree},</if>
+            <if test="activityPrice != null">#{activityPrice},</if>
+            <if test="activityPlace != null and activityPlace != ''">#{activityPlace},</if>
+            <if test="publishId != null">#{publishId},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateActivity" parameterType="Activity">
+        update ch_activity
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="activityName != null and activityName != ''">activity_name = #{activityName},</if>
+            <if test="activityDate != null">activity_date = #{activityDate},</if>
+            <if test="activityClassify != null">activity_classify = #{activityClassify},</if>
+            <if test="isFree != null">is_free = #{isFree},</if>
+            <if test="activityPrice != null">activity_price = #{activityPrice},</if>
+            <if test="activityPlace != null and activityPlace != ''">activity_place = #{activityPlace},</if>
+            <if test="publishId != null">publish_id = #{publishId},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where activity_id = #{activityId}
+    </update>
+
+    <delete id="deleteActivityByActivityId" parameterType="Long">
+        delete from ch_activity where activity_id = #{activityId}
+    </delete>
+
+    <delete id="deleteActivityByActivityIds" parameterType="String">
+        delete from ch_activity where activity_id in 
+        <foreach item="activityId" collection="array" open="(" separator="," close=")">
+            #{activityId}
+        </foreach>
+    </delete>
+</mapper>

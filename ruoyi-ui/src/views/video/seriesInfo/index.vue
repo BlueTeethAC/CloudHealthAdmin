@@ -65,13 +65,15 @@
           placeholder="请选择上传时间">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="系列是否是免费系列，免费无需付费    1：免费     0:付费" prop="seriesFree">
-        <el-input
-          v-model="queryParams.seriesFree"
-          placeholder="请输入系列是否是免费系列，免费无需付费    1：免费     0:付费"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+      <el-form-item label="否是免费" prop="seriesFree">
+        <el-select v-model="queryParams.seriesFree" placeholder="请选择否是免费" clearable>
+          <el-option
+            v-for="dict in dict.type.is_free"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="订阅价格" prop="seriesPrice">
         <el-input
@@ -157,7 +159,7 @@
           <span>{{ parseTime(scope.row.seriesUploadDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="系列是否是免费系列，免费无需付费    1：免费     0:付费" align="center" prop="seriesFree">
+      <el-table-column label="否是免费" align="center" prop="seriesFree">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.is_free" :value="scope.row.seriesFree"/>
         </template>
@@ -225,8 +227,15 @@
             placeholder="请选择上传时间">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="系列是否是免费系列，免费无需付费    1：免费     0:付费" prop="seriesFree">
-          <el-input v-model="form.seriesFree" placeholder="请输入系列是否是免费系列，免费无需付费    1：免费     0:付费" />
+        <el-form-item label="否是免费" prop="seriesFree">
+          <el-select v-model="form.seriesFree" placeholder="请选择否是免费">
+            <el-option
+              v-for="dict in dict.type.is_free"
+              :key="dict.value"
+              :label="dict.label"
+              :value="parseInt(dict.value)"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="订阅价格" prop="seriesPrice">
           <el-input v-model="form.seriesPrice" placeholder="请输入订阅价格" />
@@ -254,7 +263,7 @@ import { listSeriesInfo, getSeriesInfo, delSeriesInfo, addSeriesInfo, updateSeri
 
 export default {
   name: "SeriesInfo",
-  dicts: ['video_status'],
+  dicts: ['video_status', 'is_free'],
   data() {
     return {
       // 遮罩层
@@ -314,7 +323,7 @@ export default {
           { required: true, message: "上传时间不能为空", trigger: "blur" }
         ],
         seriesFree: [
-          { required: true, message: "系列是否是免费系列，免费无需付费    1：免费     0:付费不能为空", trigger: "blur" }
+          { required: true, message: "否是免费不能为空", trigger: "change" }
         ],
         seriesPrice: [
           { required: true, message: "订阅价格不能为空", trigger: "blur" }
