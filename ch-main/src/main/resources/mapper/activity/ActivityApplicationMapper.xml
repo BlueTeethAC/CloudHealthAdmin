@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.LW1.activity.application.mapper.ActivityApplicationMapper">
+    
+    <resultMap type="ActivityApplication" id="ActivityApplicationResult">
+        <result property="infoId"    column="info_id"    />
+        <result property="activity"    column="activity"    />
+        <result property="userId"    column="user_id"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectActivityApplicationVo">
+        select info_id, activity, user_id, status from ch_activity_application
+    </sql>
+
+    <select id="selectActivityApplicationList" parameterType="ActivityApplication" resultMap="ActivityApplicationResult">
+        <include refid="selectActivityApplicationVo"/>
+        <where>  
+            <if test="infoId != null "> and info_id = #{infoId}</if>
+            <if test="activity != null "> and activity = #{activity}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectActivityApplicationByInfoId" parameterType="Long" resultMap="ActivityApplicationResult">
+        <include refid="selectActivityApplicationVo"/>
+        where info_id = #{infoId}
+    </select>
+        
+    <insert id="insertActivityApplication" parameterType="ActivityApplication" useGeneratedKeys="true" keyProperty="infoId">
+        insert into ch_activity_application
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="activity != null">activity,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="activity != null">#{activity},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateActivityApplication" parameterType="ActivityApplication">
+        update ch_activity_application
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="activity != null">activity = #{activity},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where info_id = #{infoId}
+    </update>
+
+    <delete id="deleteActivityApplicationByInfoId" parameterType="Long">
+        delete from ch_activity_application where info_id = #{infoId}
+    </delete>
+
+    <delete id="deleteActivityApplicationByInfoIds" parameterType="String">
+        delete from ch_activity_application where info_id in 
+        <foreach item="infoId" collection="array" open="(" separator="," close=")">
+            #{infoId}
+        </foreach>
+    </delete>
+</mapper>

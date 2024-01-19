@@ -52,7 +52,7 @@
       <el-form-item label="视频状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择视频状态" clearable>
           <el-option
-            v-for="dict in dict.type.video_status"
+            v-for="dict in dict.type.process_status"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -126,7 +126,7 @@
       </el-table-column>
       <el-table-column label="视频状态" align="center" prop="status">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.video_status" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.process_status" :value="scope.row.status"/>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -190,13 +190,14 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="视频状态" prop="status">
-          <el-radio-group v-model="form.status">
-            <el-radio
-              v-for="dict in dict.type.video_status"
+          <el-select v-model="form.status" placeholder="请选择视频状态">
+            <el-option
+              v-for="dict in dict.type.process_status"
               :key="dict.value"
-              :label="parseInt(dict.value)"
-            >{{dict.label}}</el-radio>
-          </el-radio-group>
+              :label="dict.label"
+              :value="parseInt(dict.value)"
+            ></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -212,7 +213,7 @@ import { listVideoInfo, getVideoInfo, delVideoInfo, addVideoInfo, updateVideoInf
 
 export default {
   name: "VideoInfo",
-  dicts: ['video_status'],
+  dicts: ['process_status'],
   data() {
     return {
       // 遮罩层

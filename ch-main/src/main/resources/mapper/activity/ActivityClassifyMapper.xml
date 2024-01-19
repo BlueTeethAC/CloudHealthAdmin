@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.LW1.activity.activityClassify.mapper.ActivityClassifyMapper">
+    
+    <resultMap type="ActivityClassify" id="ActivityClassifyResult">
+        <result property="classifyId"    column="classify_id"    />
+        <result property="classifyNum"    column="classify_num"    />
+        <result property="classifyName"    column="classify_name"    />
+    </resultMap>
+
+    <sql id="selectActivityClassifyVo">
+        select classify_id, classify_num, classify_name from ch_activity_classify
+    </sql>
+
+    <select id="selectActivityClassifyList" parameterType="ActivityClassify" resultMap="ActivityClassifyResult">
+        <include refid="selectActivityClassifyVo"/>
+        <where>  
+            <if test="classifyId != null "> and classify_id = #{classifyId}</if>
+            <if test="classifyNum != null "> and classify_num = #{classifyNum}</if>
+            <if test="classifyName != null  and classifyName != ''"> and classify_name like concat('%', #{classifyName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectActivityClassifyByClassifyId" parameterType="Long" resultMap="ActivityClassifyResult">
+        <include refid="selectActivityClassifyVo"/>
+        where classify_id = #{classifyId}
+    </select>
+        
+    <insert id="insertActivityClassify" parameterType="ActivityClassify" useGeneratedKeys="true" keyProperty="classifyId">
+        insert into ch_activity_classify
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="classifyNum != null">classify_num,</if>
+            <if test="classifyName != null and classifyName != ''">classify_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="classifyNum != null">#{classifyNum},</if>
+            <if test="classifyName != null and classifyName != ''">#{classifyName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateActivityClassify" parameterType="ActivityClassify">
+        update ch_activity_classify
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="classifyNum != null">classify_num = #{classifyNum},</if>
+            <if test="classifyName != null and classifyName != ''">classify_name = #{classifyName},</if>
+        </trim>
+        where classify_id = #{classifyId}
+    </update>
+
+    <delete id="deleteActivityClassifyByClassifyId" parameterType="Long">
+        delete from ch_activity_classify where classify_id = #{classifyId}
+    </delete>
+
+    <delete id="deleteActivityClassifyByClassifyIds" parameterType="String">
+        delete from ch_activity_classify where classify_id in 
+        <foreach item="classifyId" collection="array" open="(" separator="," close=")">
+            #{classifyId}
+        </foreach>
+    </delete>
+</mapper>

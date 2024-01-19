@@ -86,7 +86,7 @@
       <el-form-item label="系列状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择系列状态" clearable>
           <el-option
-            v-for="dict in dict.type.video_status"
+            v-for="dict in dict.type.process_status"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -167,7 +167,7 @@
       <el-table-column label="订阅价格" align="center" prop="seriesPrice" />
       <el-table-column label="系列状态" align="center" prop="status">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.video_status" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.process_status" :value="scope.row.status"/>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -241,13 +241,14 @@
           <el-input v-model="form.seriesPrice" placeholder="请输入订阅价格" />
         </el-form-item>
         <el-form-item label="系列状态" prop="status">
-          <el-radio-group v-model="form.status">
-            <el-radio
-              v-for="dict in dict.type.video_status"
+          <el-select v-model="form.status" placeholder="请选择系列状态">
+            <el-option
+              v-for="dict in dict.type.process_status"
               :key="dict.value"
-              :label="parseInt(dict.value)"
-            >{{dict.label}}</el-radio>
-          </el-radio-group>
+              :label="dict.label"
+              :value="parseInt(dict.value)"
+            ></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -263,7 +264,7 @@ import { listSeriesInfo, getSeriesInfo, delSeriesInfo, addSeriesInfo, updateSeri
 
 export default {
   name: "SeriesInfo",
-  dicts: ['video_status', 'is_free'],
+  dicts: ['process_status', 'is_free'],
   data() {
     return {
       // 遮罩层

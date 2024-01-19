@@ -70,7 +70,7 @@
       <el-form-item label="审核状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择审核状态" clearable>
           <el-option
-            v-for="dict in dict.type.video_status"
+            v-for="dict in dict.type.process_status"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -149,7 +149,7 @@
       <el-table-column label="发布人id" align="center" prop="publishId" />
       <el-table-column label="审核状态" align="center" prop="status">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.video_status" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.process_status" :value="scope.row.status"/>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -219,7 +219,7 @@
         <el-form-item label="审核状态" prop="status">
           <el-select v-model="form.status" placeholder="请选择审核状态">
             <el-option
-              v-for="dict in dict.type.video_status"
+              v-for="dict in dict.type.process_status"
               :key="dict.value"
               :label="dict.label"
               :value="parseInt(dict.value)"
@@ -240,7 +240,7 @@ import { listActivityInfo, getActivityInfo, delActivityInfo, addActivityInfo, up
 
 export default {
   name: "ActivityInfo",
-  dicts: ['video_status', 'is_free'],
+  dicts: ['process_status', 'is_free'],
   data() {
     return {
       // 遮罩层
@@ -298,7 +298,7 @@ export default {
           { required: true, message: "发布人id不能为空", trigger: "blur" }
         ],
         status: [
-          { required: true, message: "审核状态   0：待审核   1：审核通过    2：审核不通过不能为空", trigger: "change" }
+          { required: true, message: "审核状态", trigger: "change" }
         ]
       }
     };
