@@ -126,6 +126,24 @@
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
 
+        <!-- lombok 包 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+
+        <!-- 引入 minio -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>8.2.2</version>
+        </dependency>
+
+
+
+
+
     </dependencies>
 
 </project>

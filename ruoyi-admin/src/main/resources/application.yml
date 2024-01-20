@@ -127,3 +127,19 @@ xss:
   excludes: /system/notice
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
+
+
+
+# 配置 minio
+minio:
+  endpoint: http://192.168.137.193:9000 # Minio 服务所在地址
+  bucketName: health # 容器名称
+  accessKey: minioStudy # key名称
+  secretKey: f0zv9A2C2rF7UpF1iRnPNmFXzaIhxX6yDN0g3PQx # 密匙
+
+
+
+
+
+
+
