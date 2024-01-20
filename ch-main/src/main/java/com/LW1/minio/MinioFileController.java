@@ -16,7 +16,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/product/file")
+@RequestMapping(value = "/minio/file")
 public class MinioFileController {
 
 
@@ -56,6 +56,7 @@ public class MinioFileController {
     @PostMapping("/upload")
     public String upload(@RequestParam("file") MultipartFile file) {
         String objectName = minioUtil.upload(file);
+        System.err.println(objectName+"上传了");
         if (null != objectName) {
             return prop.getEndpoint() + "/" + prop.getBucketName() + "/" + objectName;
         }
