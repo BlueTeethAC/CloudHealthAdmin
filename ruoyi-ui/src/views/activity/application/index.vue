@@ -25,8 +25,8 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="报名审核状态   0：待审核   1：审核通过    2：审核不通过" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择报名审核状态   0：待审核   1：审核通过    2：审核不通过" clearable>
+      <el-form-item label="报名审核状态" prop="status">
+        <el-select v-model="queryParams.status" placeholder="请选择报名审核状态" clearable>
           <el-option
             v-for="dict in dict.type.process_status"
             :key="dict.value"
@@ -92,7 +92,7 @@
       <el-table-column label="报名信息id" align="center" prop="infoId" />
       <el-table-column label="活动id" align="center" prop="activity" />
       <el-table-column label="报名用户 id" align="center" prop="userId" />
-      <el-table-column label="报名审核状态   0：待审核   1：审核通过    2：审核不通过" align="center" prop="status">
+      <el-table-column label="报名审核状态" align="center" prop="status">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.process_status" :value="scope.row.status"/>
         </template>
@@ -134,7 +134,7 @@
         <el-form-item label="报名用户 id" prop="userId">
           <el-input v-model="form.userId" placeholder="请输入报名用户 id" />
         </el-form-item>
-        <el-form-item label="报名审核状态   0：待审核   1：审核通过    2：审核不通过" prop="status">
+        <el-form-item label="报名审核状态" prop="status">
           <el-radio-group v-model="form.status">
             <el-radio
               v-for="dict in dict.type.process_status"
