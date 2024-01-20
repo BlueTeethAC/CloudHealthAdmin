@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -112,10 +113,16 @@ public class MinioUtil {
 
 
         try {
+
+            // 获得输入流
+            InputStream inputStream = file.getInputStream();
+
             PutObjectArgs objectArgs = PutObjectArgs.builder().bucket(prop.getBucketName()).object(objectName)
-                    .stream(file.getInputStream(), file.getSize(), -1).contentType(file.getContentType()).build();
+                    .stream(inputStream, file.getSize(), -1).contentType(file.getContentType()).build();
             //文件名称相同会覆盖
             minioClient.putObject(objectArgs);
+
+            inputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
             return null;

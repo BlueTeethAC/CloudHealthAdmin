@@ -1,6 +1,10 @@
 package com.LW1.video.videoInfo.service.impl;
 
+import java.util.Date;
 import java.util.List;
+
+import com.LW1.utils.DateUtil;
+import com.LW1.utils.GetDateTimeUtilClass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.LW1.video.videoInfo.mapper.VideoInfoMapper;
@@ -52,6 +56,7 @@ public class VideoInfoServiceImpl implements IVideoInfoService
     @Override
     public int insertVideoInfo(VideoInfo videoInfo)
     {
+        videoInfo.setVideoUploadDate(new Date());// 设置当前时间
         return videoInfoMapper.insertVideoInfo(videoInfo);
     }
 

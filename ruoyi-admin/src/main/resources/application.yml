@@ -57,9 +57,9 @@ spring:
   servlet:
     multipart:
       # 单个文件大小
-      max-file-size: 10MB
+      max-file-size: 1024MB
       # 设置总上传的文件大小
-      max-request-size: 20MB
+      max-request-size: 1024MB
   # 服务模块
   devtools:
     restart:
@@ -136,7 +136,6 @@ minio:
   bucketName: healthy # 容器名称
   accessKey: minioStudy # key名称
   secretKey: f0zv9A2C2rF7UpF1iRnPNmFXzaIhxX6yDN0g3PQx # 密匙
-
 
 
 

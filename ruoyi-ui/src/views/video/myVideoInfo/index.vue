@@ -247,16 +247,35 @@
           <el-upload
             class="avatar-uploader"
             :action="uploadFileUrl"
-            :show-file-list="false" 
+            :show-file-list="false"
             :on-success="photoHandleAvatarSuccess"
-            :before-upload="photoBeforeAvatarUpload">
+            :before-upload="photoBeforeAvatarUpload"
+          >
             <img v-if="form.videoPhoto" :src="form.videoPhoto" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
 
-        <el-form-item label="访问路径" prop="videoPath">
-          <el-input v-model="form.videoPath" placeholder="请输入访问路径" />
+        <el-form-item label="上传视频" prop="videoPath">
+          <!-- <el-input v-model="form.videoPath" placeholder="请输入访问路径" /> -->
+          <el-upload
+            class="upload-demo"
+            :action="uploadFileUrl"
+            :on-preview="videoHandlePreview"
+            :on-remove="videoHandleRemove"
+            :before-remove="videoBeforeRemove"
+            :on-success="uploadViewSucess"
+            :before-upload="videoBeforeUpload"
+            multiple
+            :limit="1"
+            :on-exceed="videoHandleExceed"
+            :file-list="fileList"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+            <div slot="tip" class="el-upload__tip">
+              只能上传mp4文件，且不超过1GB
+            </div>
+          </el-upload>
         </el-form-item>
 
         <el-form-item label="视频所属系列" prop="videoSeries">
@@ -304,9 +323,8 @@ export default {
   dicts: ["process_status", "video_model"],
   data() {
     return {
-
       // 文件上传地址
-      uploadFileUrl: process.env.VUE_APP_BASE_API+"/minio/file/upload", // 上传文件服务器地址
+      uploadFileUrl: process.env.VUE_APP_BASE_API + "/minio/file/upload", // 上传文件服务器地址
 
       // 遮罩层
       loading: true,
@@ -437,7 +455,15 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
+
+      // 将上传者id填入
+      // this.form.videoUploadUser = this.$store.state.user.id;
+
       this.$refs["form"].validate((valid) => {
+
+        // 将上传者id填入
+        this.form.videoUploadUser = this.$store.state.user.id;
+
         if (valid) {
           if (this.form.videoId != null) {
             updateMyVideoInfo(this.form).then((response) => {
@@ -481,25 +507,25 @@ export default {
     },
 
     // 视频封面上传成功的方法
-    photoHandleAvatarSuccess(res){
+    photoHandleAvatarSuccess(res) {
       // res 就是上传的文件路径
-      this.form.videoPhoto = res;// 将封面路径赋予 表单的 videoPhoto 就可以实现图片回显
+      this.form.videoPhoto = res; // 将封面路径赋予 表单的 videoPhoto 就可以实现图片回显
       this.$loading().close();
     },
 
     // 视频封面上传前的方法
-    photoBeforeAvatarUpload(file){
-      this.$loading()
-      const isJPG = file.type === 'image/jpeg';
+    photoBeforeAvatarUpload(file) {
+      this.$loading();
+      const isJPG = file.type === "image/jpeg";
       if (!isJPG) {
-        this.$message.error('上传文件只能是 JPG 格式!');
-        this.$loading().close()
+        this.$message.error("上传文件只能是 JPG 格式!");
+        this.$loading().close();
         return isJPG;
       }
       const isLt10M = file.size / 1024 / 1024 < 10;
       if (!isLt10M) {
-        this.$message.error('上传文件大小不能超过 10MB!');
-        this.$loading().close()
+        this.$message.error("上传文件大小不能超过 10MB!");
+        this.$loading().close();
         return isLt10M;
       }
       // return new Promise((resolve, reject) => {
@@ -508,33 +534,80 @@ export default {
       //     resolve()
       //   })
       // })
+    },
+
+    // 超出文件数量上限的钩子
+    videoHandleExceed(files, fileList) {
+      this.$message.warning(
+        `当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+          files.length + fileList.length
+        } 个文件`
+      );
+    },
+    // 点击删除文件时的钩子
+    videoHandleRemove(file) {
+      console.log(file);
+    },
+    // 点击文件时的钩子
+    videoHandlePreview(file) {
+      console.log(file);
+    },
+    // 移除文件时的钩子
+    videoBeforeRemove(file) {
+      // return this.$confirm(`确定移除 ${file.name}？`);
+      return true;
+    },
+
+    // 上传视频文件成功时的钩子
+    uploadViewSucess(res){
+      // res 就是上传的文件路径
+      this.form.videoPath = res; // 将封面路径赋予 表单的 videoPhoto 就可以实现图片回显
+      this.$loading().close();
+    },
+
+    // 视频文件上传前的方法
+    videoBeforeUpload(file){
+      this.$loading();
+      const isMP4 = file.type === "video/mp4";
+      if (!isMP4) {
+        this.$message.error("上传文件只能是 JPG 格式!");
+        this.$loading().close();
+        return isMP4;
+      }
+
+      const isLt10G = file.size / 1024 / 1024 < 1024;
+      if (!isLt10G) {
+        this.$message.error("上传文件大小不能超过 1GB!");
+        this.$loading().close();
+        return isLt10G;
+      }
     }
   },
 };
 </script>
 
 <style>
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
 </style>

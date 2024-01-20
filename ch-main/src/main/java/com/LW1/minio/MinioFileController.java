@@ -60,6 +60,7 @@ public class MinioFileController {
         if (null != objectName) {
             return prop.getEndpoint() + "/" + prop.getBucketName() + "/" + objectName;
         }
+
         return "文件上传失败";
     }
 
