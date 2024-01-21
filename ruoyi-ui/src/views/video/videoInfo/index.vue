@@ -78,7 +78,7 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           type="primary"
           plain
@@ -109,7 +109,7 @@
           @click="handleDelete"
           v-hasPermi="['video:videoInfo:remove']"
         >删除</el-button>
-      </el-col>
+      </el-col> -->
       <el-col :span="1.5">
         <el-button
           type="warning"
@@ -167,7 +167,18 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['video:videoInfo:edit']"
+            :disabled="scope.row.status!= 0"
           >审核</el-button>
+
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['video:videoInfo:edit']"
+            :disabled="scope.row.status!=2"
+          >下架</el-button>
+
           
           <!-- <el-button
             size="mini"
@@ -258,8 +269,9 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <!-- <el-button type="primary" @click="submitForm">确 定</el-button> -->
-        <el-button type="success" @click=processSubmitForm(2)>审核通过</el-button>
-        <el-button type="danger" @click=processSubmitForm(1)>审核不通过</el-button>
+        <el-button type="success" @click=processSubmitForm(2) v-show="form.status===0">审核通过</el-button>
+        <el-button type="danger" @click=processSubmitForm(1)  v-show="form.status===0">审核不通过</el-button>
+        <el-button type="danger" @click=processSubmitForm(1)  v-show="form.status===2">下架</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>

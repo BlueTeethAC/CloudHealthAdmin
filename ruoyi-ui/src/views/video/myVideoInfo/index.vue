@@ -48,7 +48,6 @@
         </el-select>
       </el-form-item>
 
-
       <el-form-item label="所属系列" prop="videoSeries">
         <el-input
           v-model="queryParams.videoSeries"
@@ -117,7 +116,7 @@
           >新增</el-button
         >
       </el-col>
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           type="success"
           plain
@@ -128,7 +127,7 @@
           v-hasPermi="['video:videoInfo:edit']"
           >修改</el-button
         >
-      </el-col>
+      </el-col> -->
 
       <!-- <el-col :span="1.5">
         <el-button
@@ -185,7 +184,6 @@
         </template>
       </el-table-column>
 
-
       <el-table-column label="视频所属系列" align="center" prop="videoSeries" />
       <el-table-column label="视频名称" align="center" prop="videoName" />
       <el-table-column
@@ -219,18 +217,29 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            :disabled="isDisable(scope.row.status)"
+            :disabled="scope.row.status != 0 && scope.row.status != 3"
             v-hasPermi="['video:videoInfo:edit']"
             >修改</el-button
           >
+
           <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            :disabled="scope.row.status != 2"
+            v-hasPermi="['video:videoInfo:edit']"
+            >下架</el-button
+          >
+
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['video:videoInfo:remove']"
             >删除</el-button
-          >
+          > -->
         </template>
       </el-table-column>
     </el-table>
@@ -247,7 +256,11 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="视频类型" prop="videoModel">
-          <el-select v-model="form.videoModel" placeholder="请选择视频类型">
+          <el-select
+            v-model="form.videoModel"
+            placeholder="请选择视频类型"
+            :disabled="form.status === 1 || form.status === 2"
+          >
             <el-option
               v-for="dict in dict.type.video_model"
               :key="dict.value"
@@ -258,7 +271,11 @@
         </el-form-item>
 
         <el-form-item label="视频分类" prop="videoCalssify">
-          <el-select v-model="form.videoCalssify" placeholder="请选择视频分类">
+          <el-select
+            v-model="form.videoCalssify"
+            placeholder="请选择视频分类"
+            :disabled="form.status === 1 || form.status === 2"
+          >
             <el-option
               v-for="dict in dict.type.video_classify"
               :key="dict.value"
@@ -268,7 +285,11 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="视频封面" prop="videoPhoto">
+        <el-form-item
+          label="视频封面"
+          prop="videoPhoto"
+          :disabled="form.status === 1 || form.status === 2"
+        >
           <!-- <el-input v-model="form.videoPhoto" placeholder="请上传视频封面" /> -->
           <el-upload
             class="avatar-uploader"
@@ -276,13 +297,18 @@
             :show-file-list="false"
             :on-success="photoHandleAvatarSuccess"
             :before-upload="photoBeforeAvatarUpload"
+            :disabled="form.status === 1 || form.status === 2"
           >
             <img v-if="form.videoPhoto" :src="form.videoPhoto" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
 
-        <el-form-item label="上传视频" prop="videoPath">
+        <el-form-item
+          label="上传视频"
+          prop="videoPath"
+          :disabled="form.status != 0 || form.status != 3"
+        >
           <!-- <el-input v-model="form.videoPath" placeholder="请输入访问路径" /> -->
           <el-upload
             class="upload-demo"
@@ -297,8 +323,27 @@
             :on-exceed="videoHandleExceed"
             :file-list="fileList"
           >
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">
+            <el-button
+              size="small"
+              type="primary"
+              :disabled="form.status === 1 || form.status === 2"
+              v-show="form.status === 0 || form.status === 3"
+              >点击上传</el-button
+            >
+
+            <el-button
+              size="small"
+              type="primary"
+              @click="reviewVideo(form.videoPath)"
+              v-show="form.status != 0"
+              >点击查看视频</el-button
+            >
+
+            <div
+              slot="tip"
+              class="el-upload__tip"
+              v-show="form.status === 0 || form.status === 3"
+            >
               只能上传mp4文件，且不超过1GB
             </div>
           </el-upload>
@@ -308,11 +353,16 @@
           <el-input
             v-model="form.videoSeries"
             placeholder="请输入视频所属系列"
+            :disabled="form.status === 1 || form.status === 2"
           />
         </el-form-item>
 
         <el-form-item label="视频名称" prop="videoName">
-          <el-input v-model="form.videoName" placeholder="请输入视频名称" />
+          <el-input
+            v-model="form.videoName"
+            placeholder="请输入视频名称"
+            :disabled="form.status === 1 || form.status === 2"
+          />
         </el-form-item>
 
         <!-- <el-form-item label="视频状态" prop="status">
@@ -328,7 +378,18 @@
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="submitForm"
+          v-show="form.status === 0 || form.status === 3"
+          >确 定</el-button
+        >
+        <el-button
+          type="danger"
+          @click="tankeOffForm"
+          v-show="form.status === 2"
+          >下 架</el-button
+        >
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -342,12 +403,12 @@ import {
   delMyVideoInfo,
   addMyVideoInfo,
   updateMyVideoInfo,
-  isDisableButton
+  isDisableButton,
 } from "@/api/video/myVideoInfo";
 
 export default {
   name: "MyVideoInfo",
-  dicts: ["video_status", "video_model","video_classify"],
+  dicts: ["video_status", "video_model", "video_classify"],
   data() {
     return {
       // 文件上传地址
@@ -382,7 +443,7 @@ export default {
         videoName: null,
         videoUploadDate: null,
         status: null,
-        userId:this.$store.state.user.id
+        userId: this.$store.state.user.id,
       },
       // 表单参数
       form: {},
@@ -449,6 +510,7 @@ export default {
         videoPhoto: null,
         videoUploadUser: null,
         videoUploadDate: null,
+        status: 0,
         // status: null
       };
       this.resetForm("form");
@@ -472,6 +534,7 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
+      this.form.status = 0; // 将状态设置为0待审核
       this.open = true;
       this.title = "添加我的课程视频";
     },
@@ -487,14 +550,15 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
-
       // 将上传者id填入
       // this.form.videoUploadUser = this.$store.state.user.id;
 
       this.$refs["form"].validate((valid) => {
-
         // 将上传者id填入
         this.form.videoUploadUser = this.$store.state.user.id;
+
+        // 将表单状态都改为待审核
+        this.form.status = 0;
 
         if (valid) {
           if (this.form.videoId != null) {
@@ -591,14 +655,14 @@ export default {
     },
 
     // 上传视频文件成功时的钩子
-    uploadViewSucess(res){
+    uploadViewSucess(res) {
       // res 就是上传的文件路径
       this.form.videoPath = res; // 将封面路径赋予 表单的 videoPhoto 就可以实现图片回显
       this.$loading().close();
     },
 
     // 视频文件上传前的方法
-    videoBeforeUpload(file){
+    videoBeforeUpload(file) {
       this.$loading();
       const isMP4 = file.type === "video/mp4";
       if (!isMP4) {
@@ -615,9 +679,42 @@ export default {
       }
     },
 
-    isDisable(status){
+    isDisable(status) {
       return isDisableButton(status);
-    }
+    },
+
+    // 新开一个页面跳转（查看上传的视频用的）
+    reviewVideo(url) {
+      window.open(url);
+    },
+
+    // 下架按钮
+    tankeOffForm() {
+
+      this.$refs["form"].validate((valid) => {
+        // 将上传者id填入
+        this.form.videoUploadUser = this.$store.state.user.id;
+
+        // 将表单状态都改为下架
+        this.form.status = 3;
+
+        if (valid) {
+          if (this.form.videoId != null) {
+            updateMyVideoInfo(this.form).then((response) => {
+              this.$modal.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            });
+          } else {
+            addMyVideoInfo(this.form).then((response) => {
+              this.$modal.msgSuccess("新增成功");
+              this.open = false;
+              this.getList();
+            });
+          }
+        }
+      });
+    },
   },
 };
 </script>
