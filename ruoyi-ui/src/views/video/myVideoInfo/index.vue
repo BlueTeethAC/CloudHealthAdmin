@@ -32,15 +32,24 @@
         </el-select>
       </el-form-item>
 
+      <!-- 视频分类 -->
       <el-form-item label="视频分类" prop="videoCalssify">
-        <el-input
+        <el-select
           v-model="queryParams.videoCalssify"
-          placeholder="请输入视频分类"
+          placeholder="请选择视频分类"
           clearable
-          @keyup.enter.native="handleQuery"
-        />
+        >
+          <el-option
+            v-for="dict in dict.type.video_classify"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          ></el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="视频所属系列" prop="videoSeries">
+
+
+      <el-form-item label="所属系列" prop="videoSeries">
         <el-input
           v-model="queryParams.videoSeries"
           placeholder="请输入视频所属系列"
@@ -74,7 +83,7 @@
           clearable
         >
           <el-option
-            v-for="dict in dict.type.process_status"
+            v-for="dict in dict.type.video_status"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -167,7 +176,16 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="视频分类" align="center" prop="videoCalssify" />
+      <el-table-column label="视频分类" align="center" prop="videoCalssify">
+        <template slot-scope="scope">
+          <dict-tag
+            :options="dict.type.video_classify"
+            :value="scope.row.videoCalssify"
+          />
+        </template>
+      </el-table-column>
+
+
       <el-table-column label="视频所属系列" align="center" prop="videoSeries" />
       <el-table-column label="视频名称" align="center" prop="videoName" />
       <el-table-column
@@ -184,7 +202,7 @@
       <el-table-column label="视频状态" align="center" prop="status">
         <template slot-scope="scope">
           <dict-tag
-            :options="dict.type.process_status"
+            :options="dict.type.video_status"
             :value="scope.row.status"
           />
         </template>
@@ -201,7 +219,8 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['video:myVideoInfo:edit']"
+            :disabled="isDisable(scope.row.status)"
+            v-hasPermi="['video:videoInfo:edit']"
             >修改</el-button
           >
           <el-button
@@ -209,7 +228,7 @@
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['video:myVideoInfo:remove']"
+            v-hasPermi="['video:videoInfo:remove']"
             >删除</el-button
           >
         </template>
@@ -239,7 +258,14 @@
         </el-form-item>
 
         <el-form-item label="视频分类" prop="videoCalssify">
-          <el-input v-model="form.videoCalssify" placeholder="请输入视频分类" />
+          <el-select v-model="form.videoCalssify" placeholder="请选择视频分类">
+            <el-option
+              v-for="dict in dict.type.video_classify"
+              :key="dict.value"
+              :label="dict.label"
+              :value="parseInt(dict.value)"
+            ></el-option>
+          </el-select>
         </el-form-item>
 
         <el-form-item label="视频封面" prop="videoPhoto">
@@ -278,7 +304,7 @@
           </el-upload>
         </el-form-item>
 
-        <el-form-item label="视频所属系列" prop="videoSeries">
+        <el-form-item label="所属系列" prop="videoSeries">
           <el-input
             v-model="form.videoSeries"
             placeholder="请输入视频所属系列"
@@ -292,7 +318,7 @@
         <!-- <el-form-item label="视频状态" prop="status">
           <el-select v-model="form.status" placeholder="请选择视频状态">
             <el-option
-              v-for="dict in dict.type.process_status"
+              v-for="dict in dict.type.video_status"
               :key="dict.value"
               :label="dict.label"
               :value="parseInt(dict.value)"
@@ -316,11 +342,12 @@ import {
   delMyVideoInfo,
   addMyVideoInfo,
   updateMyVideoInfo,
+  isDisableButton
 } from "@/api/video/myVideoInfo";
 
 export default {
   name: "MyVideoInfo",
-  dicts: ["process_status", "video_model"],
+  dicts: ["video_status", "video_model","video_classify"],
   data() {
     return {
       // 文件上传地址
@@ -355,6 +382,7 @@ export default {
         videoName: null,
         videoUploadDate: null,
         status: null,
+        userId:this.$store.state.user.id
       },
       // 表单参数
       form: {},
@@ -394,6 +422,10 @@ export default {
     /** 查询我的课程视频列表 */
     getList() {
       this.loading = true;
+
+      // 添加自己的用户信息id
+      this.queryParams.videoUploadUser = this.$store.state.user.id;
+
       listMyVideoInfo(this.queryParams).then((response) => {
         this.myVideoInfoList = response.rows;
         this.total = response.total;
@@ -581,6 +613,10 @@ export default {
         this.$loading().close();
         return isLt10G;
       }
+    },
+
+    isDisable(status){
+      return isDisableButton(status);
     }
   },
 };

@@ -42,3 +42,10 @@ export function delMyVideoInfo(videoId) {
     method: 'delete'
   })
 }
+
+// 判断按钮是否可用的方法
+export function isDisableButton(status){
+  if(status === 0) return false;
+  return true;
+}
+

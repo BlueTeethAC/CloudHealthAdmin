@@ -1,23 +1,35 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+      
       <el-form-item label="视频类型" prop="videoModel">
-        <el-input
+        <el-select
           v-model="queryParams.videoModel"
-          placeholder="请输入视频类型"
+          placeholder="请选择视频类型"
           clearable
-          @keyup.enter.native="handleQuery"
-        />
+        >
+          <el-option
+            v-for="dict in dict.type.video_model"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          ></el-option>
+        </el-select>
       </el-form-item>
+
+      
       <el-form-item label="视频分类" prop="videoCalssify">
-        <el-input
-          v-model="queryParams.videoCalssify"
-          placeholder="请输入视频分类"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="视频所属系列" prop="videoSeries">
+          <el-select v-model="form.videoCalssify" placeholder="请选择视频分类">
+            <el-option
+              v-for="dict in dict.type.video_classify"
+              :key="dict.value"
+              :label="dict.label"
+              :value="parseInt(dict.value)"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+
+      <el-form-item label="所属系列" prop="videoSeries">
         <el-input
           v-model="queryParams.videoSeries"
           placeholder="请输入视频所属系列"
@@ -33,7 +45,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="视频上传者id" prop="videoUploadUser">
+      <el-form-item label="上传者id" prop="videoUploadUser">
         <el-input
           v-model="queryParams.videoUploadUser"
           placeholder="请输入视频上传者id"
@@ -52,7 +64,7 @@
       <el-form-item label="视频状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择视频状态" clearable>
           <el-option
-            v-for="dict in dict.type.process_status"
+            v-for="dict in dict.type.video_status"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -114,8 +126,26 @@
     <el-table v-loading="loading" :data="videoInfoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="视频id" align="center" prop="videoId" />
-      <el-table-column label="视频类型" align="center" prop="videoModel" />
-      <el-table-column label="视频分类" align="center" prop="videoCalssify" />
+      
+      <el-table-column label="视频类型" align="center" prop="videoModel">
+        <template slot-scope="scope">
+          <dict-tag
+            :options="dict.type.video_model"
+            :value="scope.row.videoModel"
+          />
+        </template>
+      </el-table-column>
+
+      
+      <el-table-column label="视频分类" align="center" prop="videoCalssify">
+        <template slot-scope="scope">
+          <dict-tag
+            :options="dict.type.video_classify"
+            :value="scope.row.videoCalssify"
+          />
+        </template>
+      </el-table-column>
+
       <el-table-column label="视频所属系列" align="center" prop="videoSeries" />
       <el-table-column label="视频名称" align="center" prop="videoName" />
       <el-table-column label="视频上传者id" align="center" prop="videoUploadUser" />
@@ -126,7 +156,7 @@
       </el-table-column>
       <el-table-column label="视频状态" align="center" prop="status">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.process_status" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.video_status" :value="scope.row.status"/>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -137,14 +167,16 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['video:videoInfo:edit']"
-          >修改</el-button>
-          <el-button
+          >审核</el-button>
+          
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['video:videoInfo:remove']"
-          >删除</el-button>
+          >删除</el-button> -->
+
         </template>
       </el-table-column>
     </el-table>
@@ -160,48 +192,74 @@
     <!-- 添加或修改线上课程视频对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        
         <el-form-item label="视频类型" prop="videoModel">
-          <el-input v-model="form.videoModel" placeholder="请输入视频类型" />
-        </el-form-item>
-        <el-form-item label="视频分类" prop="videoCalssify">
-          <el-input v-model="form.videoCalssify" placeholder="请输入视频分类" />
-        </el-form-item>
-        <el-form-item label="访问路径" prop="videoPath">
-          <el-input v-model="form.videoPath" placeholder="请输入访问路径" />
-        </el-form-item>
-        <el-form-item label="视频所属系列" prop="videoSeries">
-          <el-input v-model="form.videoSeries" placeholder="请输入视频所属系列" />
-        </el-form-item>
-        <el-form-item label="视频名称" prop="videoName">
-          <el-input v-model="form.videoName" placeholder="请输入视频名称" />
-        </el-form-item>
-        <el-form-item label="视频封面路径" prop="videoPhoto">
-          <el-input v-model="form.videoPhoto" placeholder="请输入视频封面路径" />
-        </el-form-item>
-        <el-form-item label="视频上传者id" prop="videoUploadUser">
-          <el-input v-model="form.videoUploadUser" placeholder="请输入视频上传者id" />
-        </el-form-item>
-        <el-form-item label="上传时间" prop="videoUploadDate">
-          <el-date-picker clearable
-            v-model="form.videoUploadDate"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择上传时间">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="视频状态" prop="status">
-          <el-select v-model="form.status" placeholder="请选择视频状态">
+          <el-select v-model="form.videoModel" placeholder="请选择视频类型" disabled>
             <el-option
-              v-for="dict in dict.type.process_status"
+              v-for="dict in dict.type.video_model"
               :key="dict.value"
               :label="dict.label"
               :value="parseInt(dict.value)"
             ></el-option>
           </el-select>
         </el-form-item>
+
+        
+        <el-form-item label="视频分类" prop="videoCalssify">
+          <el-select v-model="form.videoCalssify" placeholder="请选择视频分类" disabled>
+            <el-option
+              v-for="dict in dict.type.video_classify"
+              :key="dict.value"
+              :label="dict.label"
+              :value="parseInt(dict.value)"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="访问路径" prop="videoPath">
+          <el-button type="primary" @click="reviewVideo(form.videoPath)">点击查看视频</el-button>
+          <!-- <el-input v-model="form.videoPath" placeholder="请输入访问路径" /> -->
+        </el-form-item>
+
+
+        <el-form-item label="所属系列" prop="videoSeries">
+          <el-input v-model="form.videoSeries" placeholder="请输入视频所属系列" disabled/>
+        </el-form-item>
+        <el-form-item label="视频名称" prop="videoName">
+          <el-input v-model="form.videoName" placeholder="请输入视频名称" disabled/>
+        </el-form-item>
+        <el-form-item label="视频封面" prop="videoPhoto">
+          <!-- <el-input v-model="form.videoPhoto" placeholder="请输入视频封面路径" /> -->
+          <img v-if="form.videoPhoto" :src="form.videoPhoto" class="avatar" />
+        </el-form-item>
+        <el-form-item label="上传者id" prop="videoUploadUser">
+          <el-input v-model="form.videoUploadUser" placeholder="请输入视频上传者id" disabled/>
+        </el-form-item>
+        <el-form-item label="上传时间" prop="videoUploadDate">
+          <el-date-picker clearable
+            v-model="form.videoUploadDate"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择上传时间" disabled>
+          </el-date-picker>
+        </el-form-item>
+
+        <!-- <el-form-item label="视频状态" prop="status">
+          <el-select v-model="form.status" placeholder="请选择视频状态">
+            <el-option
+              v-for="dict in dict.type.video_status"
+              :key="dict.value"
+              :label="dict.label"
+              :value="parseInt(dict.value)"
+            ></el-option>
+          </el-select>
+        </el-form-item> -->
+
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <!-- <el-button type="primary" @click="submitForm">确 定</el-button> -->
+        <el-button type="success" @click=processSubmitForm(2)>审核通过</el-button>
+        <el-button type="danger" @click=processSubmitForm(1)>审核不通过</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -213,7 +271,7 @@ import { listVideoInfo, getVideoInfo, delVideoInfo, addVideoInfo, updateVideoInf
 
 export default {
   name: "VideoInfo",
-  dicts: ['process_status'],
+  dicts: ['video_status',"video_model","video_classify"],
   data() {
     return {
       // 遮罩层
@@ -378,7 +436,38 @@ export default {
       this.download('video/videoInfo/export', {
         ...this.queryParams
       }, `videoInfo_${new Date().getTime()}.xlsx`)
-    }
+    },
+
+    // 新开一个页面跳转（查看上传的视频用的）
+    reviewVideo(url){
+      window.open(url);
+    },
+
+
+    // 审核按钮
+    processSubmitForm(videsStatus) {
+
+      this.form.status = videsStatus;
+
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          if (this.form.videoId != null) {
+            updateVideoInfo(this.form).then(response => {
+              this.$modal.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            });
+          } else {
+            addVideoInfo(this.form).then(response => {
+              this.$modal.msgSuccess("新增成功");
+              this.open = false;
+              this.getList();
+            });
+          }
+        }
+      });
+    },
+
   }
 };
 </script>
