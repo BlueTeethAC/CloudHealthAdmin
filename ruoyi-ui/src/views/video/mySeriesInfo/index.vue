@@ -137,7 +137,7 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="seriesInfoList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="mySeriesInfoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="系列id" align="center" prop="seriesId" />
       <el-table-column label="系列名称" align="center" prop="seriesName" />
@@ -189,7 +189,7 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改视频系列对话框 -->
+    <!-- 添加或修改我的视频系列对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="系列名称" prop="seriesName">
@@ -248,10 +248,10 @@
 </template>
 
 <script>
-import { listSeriesInfo, getSeriesInfo, delSeriesInfo, addSeriesInfo, updateSeriesInfo } from "@/api/video/seriesInfo";
+import { listMySeriesInfo, getMySeriesInfo, delMySeriesInfo, addMySeriesInfo, updateMySeriesInfo } from "@/api/video/mySeriesInfo";
 
 export default {
-  name: "SeriesInfo",
+  name: "MySeriesInfo",
   dicts: ['process_status', 'is_free'],
   data() {
     return {
@@ -267,8 +267,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 视频系列表格数据
-      seriesInfoList: [],
+      // 我的视频系列表格数据
+      mySeriesInfoList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -323,11 +323,11 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询视频系列列表 */
+    /** 查询我的视频系列列表 */
     getList() {
       this.loading = true;
-      listSeriesInfo(this.queryParams).then(response => {
-        this.seriesInfoList = response.rows;
+      listMySeriesInfo(this.queryParams).then(response => {
+        this.mySeriesInfoList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -373,16 +373,16 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加视频系列";
+      this.title = "添加我的视频系列";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const seriesId = row.seriesId || this.ids
-      getSeriesInfo(seriesId).then(response => {
+      getMySeriesInfo(seriesId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改视频系列";
+        this.title = "修改我的视频系列";
       });
     },
     /** 提交按钮 */
@@ -390,13 +390,13 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.seriesId != null) {
-            updateSeriesInfo(this.form).then(response => {
+            updateMySeriesInfo(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addSeriesInfo(this.form).then(response => {
+            addMySeriesInfo(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -408,8 +408,8 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const seriesIds = row.seriesId || this.ids;
-      this.$modal.confirm('是否确认删除视频系列编号为"' + seriesIds + '"的数据项？').then(function() {
-        return delSeriesInfo(seriesIds);
+      this.$modal.confirm('是否确认删除我的视频系列编号为"' + seriesIds + '"的数据项？').then(function() {
+        return delMySeriesInfo(seriesIds);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
@@ -417,9 +417,9 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('video/seriesInfo/export', {
+      this.download('video/mySeriesInfo/export', {
         ...this.queryParams
-      }, `seriesInfo_${new Date().getTime()}.xlsx`)
+      }, `mySeriesInfo_${new Date().getTime()}.xlsx`)
     }
   }
 };

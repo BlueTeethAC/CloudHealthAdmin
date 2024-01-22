@@ -11,7 +11,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 视频系列对象 ch_video_series
  * 
  * @author BlueTeethAC
- * @date 2024-01-18
+ * @date 2024-01-22
  */
 public class VideoSeries extends BaseEntity
 {
@@ -40,17 +40,13 @@ public class VideoSeries extends BaseEntity
     @Excel(name = "系列封面路径")
     private String seriesPhoto;
 
-    /** 系列上传者id */
-    @Excel(name = "系列上传者id")
-    private Long seriesCreater;
-
     /** 上传时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "上传时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date seriesUploadDate;
 
-    /** 系列是否是免费系列，免费无需付费    1：免费     0:付费 */
-    @Excel(name = "系列是否是免费系列，免费无需付费    1：免费     0:付费")
+    /** 是否免费 */
+    @Excel(name = "是否免费")
     private Long seriesFree;
 
     /** 订阅价格 */
@@ -115,15 +111,6 @@ public class VideoSeries extends BaseEntity
     {
         return seriesPhoto;
     }
-    public void setSeriesCreater(Long seriesCreater) 
-    {
-        this.seriesCreater = seriesCreater;
-    }
-
-    public Long getSeriesCreater() 
-    {
-        return seriesCreater;
-    }
     public void setSeriesUploadDate(Date seriesUploadDate) 
     {
         this.seriesUploadDate = seriesUploadDate;
@@ -170,7 +157,6 @@ public class VideoSeries extends BaseEntity
             .append("seriesClassify", getSeriesClassify())
             .append("seriesIntroduction", getSeriesIntroduction())
             .append("seriesPhoto", getSeriesPhoto())
-            .append("seriesCreater", getSeriesCreater())
             .append("seriesUploadDate", getSeriesUploadDate())
             .append("seriesFree", getSeriesFree())
             .append("seriesPrice", getSeriesPrice())

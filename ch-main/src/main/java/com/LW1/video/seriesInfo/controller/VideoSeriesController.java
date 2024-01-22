@@ -25,7 +25,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * 视频系列Controller
  * 
  * @author BlueTeethAC
- * @date 2024-01-18
+ * @date 2024-01-22
  */
 @RestController
 @RequestMapping("/video/seriesInfo")

@@ -7,7 +7,7 @@ import com.LW1.video.seriesInfo.domain.VideoSeries;
  * 视频系列Service接口
  * 
  * @author BlueTeethAC
- * @date 2024-01-18
+ * @date 2024-01-22
  */
 public interface IVideoSeriesService 
 {

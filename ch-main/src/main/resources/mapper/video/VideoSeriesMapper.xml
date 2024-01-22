@@ -11,7 +11,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="seriesClassify"    column="series_classify"    />
         <result property="seriesIntroduction"    column="series_introduction"    />
         <result property="seriesPhoto"    column="series_photo"    />
-        <result property="seriesCreater"    column="series_creater"    />
         <result property="seriesUploadDate"    column="series_upload_date"    />
         <result property="seriesFree"    column="series_free"    />
         <result property="seriesPrice"    column="series_price"    />
@@ -19,7 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectVideoSeriesVo">
-        select series_id, series_name, series_creater_id, series_classify, series_introduction, series_photo, series_creater, series_upload_date, series_free, series_price, status from ch_video_series
+        select series_id, series_name, series_creater_id, series_classify, series_introduction, series_photo, series_upload_date, series_free, series_price, status from ch_video_series
     </sql>
 
     <select id="selectVideoSeriesList" parameterType="VideoSeries" resultMap="VideoSeriesResult">
@@ -31,7 +30,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="seriesClassify != null "> and series_classify = #{seriesClassify}</if>
             <if test="seriesIntroduction != null  and seriesIntroduction != ''"> and series_introduction = #{seriesIntroduction}</if>
             <if test="seriesPhoto != null  and seriesPhoto != ''"> and series_photo = #{seriesPhoto}</if>
-            <if test="seriesCreater != null "> and series_creater = #{seriesCreater}</if>
             <if test="seriesUploadDate != null "> and series_upload_date = #{seriesUploadDate}</if>
             <if test="seriesFree != null "> and series_free = #{seriesFree}</if>
             <if test="seriesPrice != null "> and series_price = #{seriesPrice}</if>
@@ -52,7 +50,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="seriesClassify != null">series_classify,</if>
             <if test="seriesIntroduction != null">series_introduction,</if>
             <if test="seriesPhoto != null and seriesPhoto != ''">series_photo,</if>
-            <if test="seriesCreater != null">series_creater,</if>
             <if test="seriesUploadDate != null">series_upload_date,</if>
             <if test="seriesFree != null">series_free,</if>
             <if test="seriesPrice != null">series_price,</if>
@@ -64,7 +61,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="seriesClassify != null">#{seriesClassify},</if>
             <if test="seriesIntroduction != null">#{seriesIntroduction},</if>
             <if test="seriesPhoto != null and seriesPhoto != ''">#{seriesPhoto},</if>
-            <if test="seriesCreater != null">#{seriesCreater},</if>
             <if test="seriesUploadDate != null">#{seriesUploadDate},</if>
             <if test="seriesFree != null">#{seriesFree},</if>
             <if test="seriesPrice != null">#{seriesPrice},</if>
@@ -80,7 +76,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="seriesClassify != null">series_classify = #{seriesClassify},</if>
             <if test="seriesIntroduction != null">series_introduction = #{seriesIntroduction},</if>
             <if test="seriesPhoto != null and seriesPhoto != ''">series_photo = #{seriesPhoto},</if>
-            <if test="seriesCreater != null">series_creater = #{seriesCreater},</if>
             <if test="seriesUploadDate != null">series_upload_date = #{seriesUploadDate},</if>
             <if test="seriesFree != null">series_free = #{seriesFree},</if>
             <if test="seriesPrice != null">series_price = #{seriesPrice},</if>
