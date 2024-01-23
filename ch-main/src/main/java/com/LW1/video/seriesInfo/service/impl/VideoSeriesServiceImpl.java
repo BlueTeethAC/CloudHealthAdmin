@@ -1,5 +1,6 @@
 package com.LW1.video.seriesInfo.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,8 @@ public class VideoSeriesServiceImpl implements IVideoSeriesService
     @Override
     public int insertVideoSeries(VideoSeries videoSeries)
     {
+        // 新增视频系列的时候，加上填写的用户与上传日期
+        videoSeries.setSeriesUploadDate(new Date());
         return videoSeriesMapper.insertVideoSeries(videoSeries);
     }
 

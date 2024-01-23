@@ -51,7 +51,7 @@ public class VideoSeries extends BaseEntity
 
     /** 订阅价格 */
     @Excel(name = "订阅价格")
-    private Long seriesPrice;
+    private Float seriesPrice;
 
     /** 系列状态 */
     @Excel(name = "系列状态")
@@ -129,12 +129,12 @@ public class VideoSeries extends BaseEntity
     {
         return seriesFree;
     }
-    public void setSeriesPrice(Long seriesPrice) 
+    public void setSeriesPrice(Float seriesPrice)
     {
         this.seriesPrice = seriesPrice;
     }
 
-    public Long getSeriesPrice() 
+    public Float getSeriesPrice()
     {
         return seriesPrice;
     }

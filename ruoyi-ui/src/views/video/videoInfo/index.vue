@@ -241,7 +241,7 @@
         </el-form-item>
         <el-form-item label="视频封面" prop="videoPhoto">
           <!-- <el-input v-model="form.videoPhoto" placeholder="请输入视频封面路径" /> -->
-          <img v-if="form.videoPhoto" :src="form.videoPhoto" class="avatar" />
+          <img v-if="form.videoPhoto" :src="form.videoPhoto" width="200px" height="200px" class="avatar" />
         </el-form-item>
         <el-form-item label="上传者id" prop="videoUploadUser">
           <el-input v-model="form.videoUploadUser" placeholder="请输入视频上传者id" disabled/>
@@ -483,3 +483,31 @@ export default {
   }
 };
 </script>
+
+
+<style>
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+  object-fit: cover;
+}
+</style>
