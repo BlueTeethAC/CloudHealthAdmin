@@ -132,18 +132,9 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['video:seriesInfo:add']"
-          >新增</el-button
-        >
-      </el-col>
-      <el-col :span="1.5">
+
+      <!-- 修改 -->
+      <!-- <el-col :span="1.5">
         <el-button
           type="success"
           plain
@@ -153,6 +144,19 @@
           @click="handleUpdate"
           v-hasPermi="['video:seriesInfo:edit']"
           >修改</el-button
+        >
+      </el-col> -->
+
+
+      <el-col :span="1.5">
+        <el-button
+          type="primary"
+          plain
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleAdd"
+          v-hasPermi="['video:seriesInfo:add']"
+          >新增</el-button
         >
       </el-col>
 
@@ -233,7 +237,7 @@
       <el-table-column label="系列状态" align="center" prop="status">
         <template slot-scope="scope">
           <dict-tag
-            :options="dict.type.process_status"
+            :options="dict.type.video_status"
             :value="scope.row.status"
           />
         </template>
@@ -251,16 +255,29 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['video:seriesInfo:edit']"
+            :disabled="scope.row.status!=0&&scope.row.status!=3"
             >修改</el-button
           >
+
           <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['video:seriesInfo:edit']"
+            :disabled="scope.row.status!=2"
+            >下架</el-button
+          >
+
+
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['video:seriesInfo:remove']"
             >删除</el-button
-          >
+          > -->
         </template>
       </el-table-column>
     </el-table>
@@ -275,9 +292,10 @@
 
     <!-- 添加或修改我的视频系列对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body @open="dialogOpen()">
+
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="系列名称" prop="seriesName">
-          <el-input v-model="form.seriesName" placeholder="请输入系列名称" />
+          <el-input v-model="form.seriesName" placeholder="请输入系列名称" :disabled="form.status!==0&&form.status!==3"/>
         </el-form-item>
         <!-- <el-form-item label="系列创建者id" prop="seriesCreaterId">
           <el-input v-model="form.seriesCreaterId" placeholder="请输入系列创建者id" />
@@ -288,6 +306,7 @@
             v-model="form.seriesClassify"
             placeholder="请选择系列分类"
             clearable
+            :disabled="form.status!==0&&form.status!==3"
           >
             <el-option
               v-for="dict in dict.type.video_classify"
@@ -304,6 +323,7 @@
             :autosize="{ minRows: 4, maxRows: 5 }"
             v-model="form.seriesIntroduction"
             placeholder="请输入系列简介"
+            :disabled="form.status!==0&&form.status!==3"
           />
         </el-form-item>
 
@@ -315,6 +335,7 @@
             :show-file-list="false"
             :on-success="photoHandleAvatarSuccess"
             :before-upload="photoBeforeAvatarUpload"
+            :disabled="form.status!==0&&form.status!==3"
           >
             <img
               v-if="form.seriesPhoto"
@@ -339,6 +360,7 @@
             v-model="form.seriesFree"
             placeholder="请选择是否免费"
             @change="(value) => ifFree(value)"
+            :disabled="form.status!==0&&form.status!==3"
           >
             <el-option
               v-for="dict in dict.type.is_free"
@@ -350,11 +372,22 @@
         </el-form-item>
 
         <el-form-item label="订阅价格" prop="seriesPrice">
+          <!-- 这个是用来看的 -->
+          <el-input
+            v-model="form.seriesPrice"
+            placeholder="请输入订阅价格"
+            style="width: 150px"
+            :disabled="form.status!==0&&form.status!==3"
+            v-show="form.status!==0&&form.status!==3"
+          />
+
+          <!-- 这个是用来输入的 -->
           <el-input
             v-model="form.seriesPrice"
             placeholder="请输入订阅价格"
             style="width: 150px"
             :disabled="isIfFree"
+            v-show="form.status===0 || form.status===3"
           />
           元
         </el-form-item>
@@ -371,7 +404,8 @@
         </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="primary" @click="submitForm" v-show="this.form.status === 0||this.form.status === 3">确 定</el-button>
+        <el-button type="danger" @click="offShell" v-show="this.form.status === 2">下 架</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -435,6 +469,7 @@ export default {
       form: {
         seriesFree: 1,
         seriesPrice: 0,
+        status: 0,// 默认状态为0
       },
       // 表单校验
       rules: {
@@ -504,7 +539,7 @@ export default {
         seriesUploadDate: null,
         seriesFree: 1,
         seriesPrice: 0,
-        status: null,
+        status: 0,
       };
       this.resetForm("form");
     },
@@ -545,6 +580,9 @@ export default {
       this.$refs["form"].validate((valid) => {
         // 将上传者id填入
         this.form.seriesCreaterId = this.$store.state.user.id;
+
+        // 将状态设置为 0 待审核
+        this.form.status = 0;
 
         if (valid) {
           if (this.form.seriesId != null) {
@@ -630,8 +668,35 @@ export default {
 
     // 弹窗打开的方法
     dialogOpen(){
-      this.isIfFree = true;
-    }
+      // this.isIfFree = true;
+      this.ifFree(this.form.seriesFree);
+    },
+
+
+    /** 下架按钮 */
+    offShell() {
+      this.$refs["form"].validate((valid) => {
+        
+        this.form.status = 3;// 状态设置为 3
+
+        if (valid) {
+          if (this.form.seriesId != null) {
+            updateMySeriesInfo(this.form).then((response) => {
+              this.$modal.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            });
+          } else {
+            addMySeriesInfo(this.form).then((response) => {
+              this.$modal.msgSuccess("新增成功");
+              this.open = false;
+              this.getList();
+            });
+          }
+        }
+      });
+    },
+    
   },
 };
 </script>
