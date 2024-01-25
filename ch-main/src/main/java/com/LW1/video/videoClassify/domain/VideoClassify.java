@@ -20,7 +20,7 @@ public class VideoClassify extends BaseEntity
 
     /** 分类编号 */
     @Excel(name = "分类编号")
-    private String classifyNum;
+    private Integer classifyNum;
 
     /** 分类名称 */
     @Excel(name = "分类名称")
@@ -35,12 +35,12 @@ public class VideoClassify extends BaseEntity
     {
         return classifyId;
     }
-    public void setClassifyNum(String classifyNum) 
+    public void setClassifyNum(Integer classifyNum)
     {
         this.classifyNum = classifyNum;
     }
 
-    public String getClassifyNum() 
+    public Integer getClassifyNum()
     {
         return classifyNum;
     }

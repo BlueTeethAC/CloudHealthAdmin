@@ -37,7 +37,7 @@ public class VideoClassifyController extends BaseController
     /**
      * 查询视频课程分类列表
      */
-    @PreAuthorize("@ss.hasPermi('video:videoClassify:list')")
+    // @PreAuthorize("@ss.hasPermi('video:videoClassify:list')")
     @GetMapping("/list")
     public TableDataInfo list(VideoClassify videoClassify)
     {

@@ -1,7 +1,13 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      
+    <el-form
+      :model="queryParams"
+      ref="queryForm"
+      size="small"
+      :inline="true"
+      v-show="showSearch"
+      label-width="68px"
+    >
       <!-- <el-form-item label="系列id" prop="seriesId">
         <el-input
           v-model="queryParams.seriesId"
@@ -10,7 +16,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item> -->
-      
+
       <el-form-item label="系列名称" prop="seriesName">
         <el-input
           v-model="queryParams.seriesName"
@@ -19,7 +25,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      
+
       <el-form-item label="创建者id" prop="seriesCreaterId">
         <el-input
           v-model="queryParams.seriesCreaterId"
@@ -36,10 +42,10 @@
           clearable
         >
           <el-option
-            v-for="dict in dict.type.video_classify"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
+            v-for="dict in videoClassify"
+            :key="dict.classifyNum"
+            :label="dict.classifyName"
+            :value="dict.classifyNum"
           ></el-option>
         </el-select>
       </el-form-item>
@@ -63,16 +69,22 @@
       </el-form-item> -->
 
       <el-form-item label="上传时间" prop="seriesUploadDate">
-        <el-date-picker clearable
+        <el-date-picker
+          clearable
           v-model="queryParams.seriesUploadDate"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="请选择上传时间">
+          placeholder="请选择上传时间"
+        >
         </el-date-picker>
       </el-form-item>
 
       <el-form-item label="是否免费" prop="seriesFree">
-        <el-select v-model="queryParams.seriesFree" placeholder="请选择是否免费" clearable>
+        <el-select
+          v-model="queryParams.seriesFree"
+          placeholder="请选择是否免费"
+          clearable
+        >
           <el-option
             v-for="dict in dict.type.is_free"
             :key="dict.value"
@@ -92,7 +104,11 @@
       </el-form-item> -->
 
       <el-form-item label="系列状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择系列状态" clearable>
+        <el-select
+          v-model="queryParams.status"
+          placeholder="请选择系列状态"
+          clearable
+        >
           <el-option
             v-for="dict in dict.type.video_status"
             :key="dict.value"
@@ -103,8 +119,16 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="mini"
+          @click="handleQuery"
+          >搜索</el-button
+        >
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+          >重置</el-button
+        >
       </el-form-item>
     </el-form>
 
@@ -151,45 +175,74 @@
           v-hasPermi="['video:seriesInfo:export']"
         >导出</el-button>
       </el-col> -->
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar
+        :showSearch.sync="showSearch"
+        @queryTable="getList"
+      ></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="seriesInfoList" @selection-change="handleSelectionChange">
+    <el-table
+      v-loading="loading"
+      :data="seriesInfoList"
+      @selection-change="handleSelectionChange"
+    >
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="系列id" align="center" prop="seriesId" />
       <el-table-column label="系列名称" align="center" prop="seriesName" />
-      <el-table-column label="系列创建者id" align="center" prop="seriesCreaterId" />
+      <el-table-column
+        label="系列创建者id"
+        align="center"
+        prop="seriesCreaterId"
+      />
       <el-table-column label="系列分类" align="center" prop="seriesClassify">
         <template slot-scope="scope">
-          <dict-tag
+          <!-- <dict-tag
             :options="dict.type.video_classify"
             :value="scope.row.seriesClassify"
-          />
+          /> -->
+          <span>{{ getVideoClassify(scope.row.seriesClassify) }}</span>
         </template>
       </el-table-column>
-      
+
       <!-- <el-table-column label="系列简介" align="center" prop="seriesIntroduction" />
       <el-table-column label="系列封面路径" align="center" prop="seriesPhoto" /> -->
 
-      <el-table-column label="上传时间" align="center" prop="seriesUploadDate" width="180">
+      <el-table-column
+        label="上传时间"
+        align="center"
+        prop="seriesUploadDate"
+        width="180"
+      >
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.seriesUploadDate, '{y}-{m}-{d}') }}</span>
+          <span>{{
+            parseTime(scope.row.seriesUploadDate, "{y}-{m}-{d}")
+          }}</span>
         </template>
       </el-table-column>
       <el-table-column label="是否免费" align="center" prop="seriesFree">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.is_free" :value="scope.row.seriesFree"/>
+          <dict-tag
+            :options="dict.type.is_free"
+            :value="scope.row.seriesFree"
+          />
         </template>
       </el-table-column>
       <el-table-column label="订阅价格" align="center" prop="seriesPrice" />
-      
+
       <el-table-column label="审核状态" align="center" prop="status">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.video_status" :value="scope.row.status"/>
+          <dict-tag
+            :options="dict.type.video_status"
+            :value="scope.row.status"
+          />
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column
+        label="操作"
+        align="center"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -198,8 +251,9 @@
             @click="handleUpdate(scope.row)"
             v-hasPermi="['video:seriesInfo:edit']"
             :disabled="scope.row.status != 0"
-          >审核</el-button>
-          
+            >审核</el-button
+          >
+
           <el-button
             size="mini"
             type="text"
@@ -207,7 +261,8 @@
             @click="handleUpdate(scope.row)"
             v-hasPermi="['video:seriesInfo:edit']"
             :disabled="scope.row.status != 2 && scope.row.status != 3"
-          >下架</el-button>
+            >下架</el-button
+          >
 
           <!-- <el-button
             size="mini"
@@ -219,9 +274,9 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
@@ -231,23 +286,34 @@
     <!-- 添加或修改视频系列对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        
         <el-form-item label="系列名称" prop="seriesName">
-          <el-input v-model="form.seriesName" placeholder="请输入系列名称" disabled/>
+          <el-input
+            v-model="form.seriesName"
+            placeholder="请输入系列名称"
+            disabled
+          />
         </el-form-item>
 
         <el-form-item label="创建者id" prop="seriesCreaterId">
-          <el-input v-model="form.seriesCreaterId" placeholder="请输入系列创建者id" disabled/>
+          <el-input
+            v-model="form.seriesCreaterId"
+            placeholder="请输入系列创建者id"
+            disabled
+          />
         </el-form-item>
 
         <el-form-item label="系列分类" prop="seriesClassify">
           <!-- <el-input v-model="form.seriesClassify" placeholder="请输入系列分类" /> -->
-          <el-select v-model="form.seriesClassify" placeholder="请选择视频分类" disabled>
+          <el-select
+            v-model="form.seriesClassify"
+            placeholder="请选择视频分类"
+            disabled
+          >
             <el-option
-              v-for="dict in dict.type.video_classify"
-              :key="dict.value"
-              :label="dict.label"
-              :value="parseInt(dict.value)"
+              v-for="dict in videoClassify"
+              :key="dict.classifyNum"
+              :label="dict.classifyName"
+              :value="dict.classifyNum"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -262,24 +328,36 @@
             disabled
           />
         </el-form-item>
-        
+
         <el-form-item label="系列封面" prop="seriesPhoto">
           <!-- <el-input v-model="form.seriesPhoto" placeholder="请输入系列封面路径" /> -->
-          <img v-if="form.seriesPhoto" :src="form.seriesPhoto" width="200px" height="200px" class="avatar" />
+          <img
+            v-if="form.seriesPhoto"
+            :src="form.seriesPhoto"
+            width="200px"
+            height="200px"
+            class="avatar"
+          />
         </el-form-item>
-        
+
         <el-form-item label="上传时间" prop="seriesUploadDate">
-          <el-date-picker clearable
+          <el-date-picker
+            clearable
             v-model="form.seriesUploadDate"
             type="date"
             value-format="yyyy-MM-dd"
             placeholder="请选择上传时间"
-            disabled>
+            disabled
+          >
           </el-date-picker>
         </el-form-item>
-        
+
         <el-form-item label="是否免费" prop="seriesFree">
-          <el-select v-model="form.seriesFree" placeholder="请选择是否免费" disabled>
+          <el-select
+            v-model="form.seriesFree"
+            placeholder="请选择是否免费"
+            disabled
+          >
             <el-option
               v-for="dict in dict.type.is_free"
               :key="dict.value"
@@ -288,11 +366,17 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        
+
         <el-form-item label="订阅价格" prop="seriesPrice">
-          <el-input v-model="form.seriesPrice" placeholder="请输入订阅价格" style="width: 150px" disabled/> 元
+          <el-input
+            v-model="form.seriesPrice"
+            placeholder="请输入订阅价格"
+            style="width: 150px"
+            disabled
+          />
+          元
         </el-form-item>
-        
+
         <!-- <el-form-item label="系列状态" prop="status">
           <el-select v-model="form.status" placeholder="请选择系列状态">
             <el-option
@@ -303,13 +387,27 @@
             ></el-option>
           </el-select>
         </el-form-item> -->
-
       </el-form>
       <div slot="footer" class="dialog-footer">
         <!-- <el-button type="primary" @click="submitForm">确 定</el-button> -->
-        <el-button type="primary" @click="updateSeries(2)" v-show="form.status === 0">审核通过</el-button>
-        <el-button type="danger" @click="updateSeries(1)" v-show="form.status === 0">审核不通过</el-button>
-        <el-button type="danger" @click="updateSeries(3)" v-show="form.status === 2">下架</el-button>
+        <el-button
+          type="primary"
+          @click="updateSeries(2)"
+          v-show="form.status === 0"
+          >审核通过</el-button
+        >
+        <el-button
+          type="danger"
+          @click="updateSeries(1)"
+          v-show="form.status === 0"
+          >审核不通过</el-button
+        >
+        <el-button
+          type="danger"
+          @click="updateSeries(3)"
+          v-show="form.status === 2"
+          >下架</el-button
+        >
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -317,11 +415,19 @@
 </template>
 
 <script>
-import { listSeriesInfo, getSeriesInfo, delSeriesInfo, addSeriesInfo, updateSeriesInfo } from "@/api/video/seriesInfo";
+import {
+  listSeriesInfo,
+  getSeriesInfo,
+  delSeriesInfo,
+  addSeriesInfo,
+  updateSeriesInfo,
+} from "@/api/video/seriesInfo";
+
+import { listVideoClassify } from "@/api/video/videoClassify";
 
 export default {
   name: "SeriesInfo",
-  dicts: ['process_status', 'is_free','video_status','video_classify'],
+  dicts: ["process_status", "is_free", "video_status", "video_classify"],
   data() {
     return {
       // 遮罩层
@@ -355,47 +461,56 @@ export default {
         seriesUploadDate: null,
         seriesFree: null,
         seriesPrice: null,
-        status: null
+        status: null,
       },
+
+      // 视频分类
+      videoClassify: null,
+
       // 表单参数
       form: {},
       // 表单校验
       rules: {
         seriesName: [
-          { required: true, message: "系列名称不能为空", trigger: "blur" }
+          { required: true, message: "系列名称不能为空", trigger: "blur" },
         ],
         seriesCreaterId: [
-          { required: true, message: "系列创建者id不能为空", trigger: "blur" }
+          { required: true, message: "系列创建者id不能为空", trigger: "blur" },
         ],
         seriesClassify: [
-          { required: true, message: "系列分类不能为空", trigger: "blur" }
+          { required: true, message: "系列分类不能为空", trigger: "blur" },
         ],
         seriesPhoto: [
-          { required: true, message: "系列封面路径不能为空", trigger: "blur" }
+          { required: true, message: "系列封面路径不能为空", trigger: "blur" },
         ],
         seriesUploadDate: [
-          { required: true, message: "上传时间不能为空", trigger: "blur" }
+          { required: true, message: "上传时间不能为空", trigger: "blur" },
         ],
         seriesFree: [
-          { required: true, message: "是否免费不能为空", trigger: "change" }
+          { required: true, message: "是否免费不能为空", trigger: "change" },
         ],
         seriesPrice: [
-          { required: true, message: "订阅价格不能为空", trigger: "blur" }
+          { required: true, message: "订阅价格不能为空", trigger: "blur" },
         ],
         status: [
-          { required: true, message: "系列状态不能为空", trigger: "change" }
-        ]
-      }
+          { required: true, message: "系列状态不能为空", trigger: "change" },
+        ],
+      },
     };
   },
   created() {
     this.getList();
+
+    // 获得 视频分类
+    listVideoClassify().then((res) => {
+      this.videoClassify = res.rows;
+    });
   },
   methods: {
     /** 查询视频系列列表 */
     getList() {
       this.loading = true;
-      listSeriesInfo(this.queryParams).then(response => {
+      listSeriesInfo(this.queryParams).then((response) => {
         this.seriesInfoList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -418,7 +533,7 @@ export default {
         seriesUploadDate: null,
         seriesFree: null,
         seriesPrice: null,
-        status: null
+        status: null,
       };
       this.resetForm("form");
     },
@@ -434,9 +549,9 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.seriesId)
-      this.single = selection.length!==1
-      this.multiple = !selection.length
+      this.ids = selection.map((item) => item.seriesId);
+      this.single = selection.length !== 1;
+      this.multiple = !selection.length;
     },
     /** 新增按钮操作 */
     handleAdd() {
@@ -447,8 +562,8 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const seriesId = row.seriesId || this.ids
-      getSeriesInfo(seriesId).then(response => {
+      const seriesId = row.seriesId || this.ids;
+      getSeriesInfo(seriesId).then((response) => {
         this.form = response.data;
         this.open = true;
         this.title = "修改视频系列";
@@ -456,16 +571,16 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
-      this.$refs["form"].validate(valid => {
+      this.$refs["form"].validate((valid) => {
         if (valid) {
           if (this.form.seriesId != null) {
-            updateSeriesInfo(this.form).then(response => {
+            updateSeriesInfo(this.form).then((response) => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addSeriesInfo(this.form).then(response => {
+            addSeriesInfo(this.form).then((response) => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -474,25 +589,23 @@ export default {
         }
       });
     },
-
 
     // 审核通过，审核不通过，下架
     /** 提交按钮 */
     updateSeries(statusValue) {
-      this.$refs["form"].validate(valid => {
-
+      this.$refs["form"].validate((valid) => {
         // 传入审核状态
-        this.form.status=statusValue;
+        this.form.status = statusValue;
 
         if (valid) {
           if (this.form.seriesId != null) {
-            updateSeriesInfo(this.form).then(response => {
+            updateSeriesInfo(this.form).then((response) => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addSeriesInfo(this.form).then(response => {
+            addSeriesInfo(this.form).then((response) => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -502,24 +615,45 @@ export default {
       });
     },
 
-
     /** 删除按钮操作 */
     handleDelete(row) {
       const seriesIds = row.seriesId || this.ids;
-      this.$modal.confirm('是否确认删除视频系列编号为"' + seriesIds + '"的数据项？').then(function() {
-        return delSeriesInfo(seriesIds);
-      }).then(() => {
-        this.getList();
-        this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+      this.$modal
+        .confirm('是否确认删除视频系列编号为"' + seriesIds + '"的数据项？')
+        .then(function () {
+          return delSeriesInfo(seriesIds);
+        })
+        .then(() => {
+          this.getList();
+          this.$modal.msgSuccess("删除成功");
+        })
+        .catch(() => {});
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('video/seriesInfo/export', {
-        ...this.queryParams
-      }, `seriesInfo_${new Date().getTime()}.xlsx`)
-    }
-  }
+      this.download(
+        "video/seriesInfo/export",
+        {
+          ...this.queryParams,
+        },
+        `seriesInfo_${new Date().getTime()}.xlsx`
+      );
+    },
+
+    // 从 videoClassify 中获取对应的值
+    getVideoClassify(keyValue) {
+      let resultName = "未分类";
+
+      this.videoClassify.forEach((element) => {
+        if (element.classifyNum == keyValue) {
+          // console.log(element.classifyName)
+          resultName = element.classifyName;
+        }
+      });
+
+      return resultName;
+    },
+  },
 };
 </script>
 

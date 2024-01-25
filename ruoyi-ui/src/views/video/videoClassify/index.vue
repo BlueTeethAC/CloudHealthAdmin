@@ -1,14 +1,16 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="分类信息id" prop="classifyId">
+      
+      <!-- <el-form-item label="分类信息id" prop="classifyId">
         <el-input
           v-model="queryParams.classifyId"
           placeholder="请输入分类信息id"
           clearable
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
+      
       <el-form-item label="分类编号" prop="classifyNum">
         <el-input
           v-model="queryParams.classifyNum"
@@ -17,6 +19,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      
       <el-form-item label="分类名称" prop="classifyName">
         <el-input
           v-model="queryParams.classifyName"
@@ -25,6 +28,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -64,7 +68,8 @@
           v-hasPermi="['video:videoClassify:remove']"
         >删除</el-button>
       </el-col>
-      <el-col :span="1.5">
+
+      <!-- <el-col :span="1.5">
         <el-button
           type="warning"
           plain
@@ -73,14 +78,18 @@
           @click="handleExport"
           v-hasPermi="['video:videoClassify:export']"
         >导出</el-button>
-      </el-col>
+      </el-col> -->
+
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="videoClassifyList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
+
       <el-table-column label="分类信息id" align="center" prop="classifyId" />
+      
       <el-table-column label="分类编号" align="center" prop="classifyNum" />
+      
       <el-table-column label="分类名称" align="center" prop="classifyName" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">

@@ -40,10 +40,10 @@
           clearable
         >
           <el-option
-            v-for="dict in dict.type.video_classify"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
+            v-for="dict in videoClassify"
+            :key="dict.classifyNum"
+            :label="dict.classifyName"
+            :value="dict.classifyNum"
           ></el-option>
         </el-select>
       </el-form-item>
@@ -177,10 +177,13 @@
 
       <el-table-column label="视频分类" align="center" prop="videoCalssify">
         <template slot-scope="scope">
-          <dict-tag
+          <!-- <dict-tag
             :options="dict.type.video_classify"
             :value="scope.row.videoCalssify"
-          />
+          /> -->
+          <span>
+            {{getVideoClassify(scope.row.videoCalssify)}}
+          </span>
         </template>
       </el-table-column>
 
@@ -277,10 +280,10 @@
             :disabled="form.status === 1 || form.status === 2"
           >
             <el-option
-              v-for="dict in dict.type.video_classify"
-              :key="dict.value"
-              :label="dict.label"
-              :value="parseInt(dict.value)"
+              v-for="dict in videoClassify"
+              :key="dict.classifyNum"
+              :label="dict.classifyName"
+              :value="dict.classifyNum"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -406,11 +409,16 @@ import {
   isDisableButton,
 } from "@/api/video/myVideoInfo";
 
+import { listVideoClassify } from "@/api/video/videoClassify";
+
 export default {
   name: "MyVideoInfo",
   dicts: ["video_status", "video_model", "video_classify"],
   data() {
     return {
+      // 用于选择的视频分类
+      videoClassify: null,
+
       // 文件上传地址
       uploadFileUrl: process.env.VUE_APP_BASE_API + "/minio/file/upload", // 上传文件服务器地址
 
@@ -478,6 +486,11 @@ export default {
   },
   created() {
     this.getList();
+
+    // 获得 视频分类
+    listVideoClassify().then((res) => {
+      this.videoClassify = res.rows;
+    });
   },
   methods: {
     /** 查询我的课程视频列表 */
@@ -690,7 +703,6 @@ export default {
 
     // 下架按钮
     tankeOffForm() {
-
       this.$refs["form"].validate((valid) => {
         // 将上传者id填入
         this.form.videoUploadUser = this.$store.state.user.id;
@@ -714,6 +726,19 @@ export default {
           }
         }
       });
+    },
+
+    // 从 videoClassify 中获取对应的值
+    getVideoClassify(keyValue) {
+      let resultName = "未分类";
+
+      this.videoClassify.forEach((element) => {
+        if (element.classifyNum == keyValue) {
+          resultName = element.classifyName;
+        }
+      });
+
+      return resultName;
     },
   },
 };

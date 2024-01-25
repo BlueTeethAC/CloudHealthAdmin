@@ -42,10 +42,10 @@
           clearable
         >
           <el-option
-            v-for="dict in dict.type.video_classify"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
+            v-for="dict in videoClassify"
+            :key="dict.classifyNum"
+            :label="dict.classifyName"
+            :value="dict.classifyNum"
           ></el-option>
         </el-select>
 
@@ -200,10 +200,13 @@
       
       <el-table-column label="系列分类" align="center" prop="seriesClassify">
         <template slot-scope="scope">
-          <dict-tag
+          <!-- <dict-tag
             :options="dict.type.video_classify"
             :value="scope.row.seriesClassify"
-          />
+          /> -->
+          <span>
+            {{getVideoClassify(scope.row.seriesClassify)}}
+          </span>
         </template>
       </el-table-column>
       
@@ -307,13 +310,15 @@
             placeholder="请选择系列分类"
             clearable
             :disabled="form.status!==0&&form.status!==3"
+            reserve-keyword
           >
             <el-option
-              v-for="dict in dict.type.video_classify"
-              :key="dict.value"
-              :label="dict.label"
-              :value="parseInt(dict.value)"
+              v-for="dict in videoClassify"
+              :key="dict.classifyNum"
+              :label="dict.classifyName"
+              :value="dict.classifyNum"
             ></el-option>
+
           </el-select>
         </el-form-item>
 
@@ -421,11 +426,18 @@ import {
   updateMySeriesInfo,
 } from "@/api/video/mySeriesInfo";
 
+import {listVideoClassify} from "@/api/video/videoClassify";
+
+
 export default {
   name: "MySeriesInfo",
   dicts: ["process_status", "is_free", "video_status", "video_classify"],
   data() {
     return {
+
+      // 用于选择的视频分类
+      videoClassify:null,
+
       // 文件上传地址
       uploadFileUrl: process.env.VUE_APP_BASE_API + "/minio/file/upload", // 上传文件服务器地址
 
@@ -507,6 +519,11 @@ export default {
   },
   created() {
     this.getList();
+
+    // 获得 视频分类
+    listVideoClassify().then(res=>{
+      this.videoClassify = res.rows;
+    })
   },
   methods: {
     /** 查询我的视频系列列表 */
@@ -670,6 +687,7 @@ export default {
     dialogOpen(){
       // this.isIfFree = true;
       this.ifFree(this.form.seriesFree);
+      this.form.seriesClassify = form.seriesClassify.toString()
     },
 
 
@@ -695,6 +713,22 @@ export default {
           }
         }
       });
+
+    },
+
+    // 从 videoClassify 中获取对应的值
+    getVideoClassify(keyValue){
+
+      let resultName = "未分类";
+
+      this.videoClassify.forEach(element => {
+        if(element.classifyNum == keyValue){
+          resultName = element.classifyName;
+        }
+      });
+
+      return resultName;
+
     },
     
   },
