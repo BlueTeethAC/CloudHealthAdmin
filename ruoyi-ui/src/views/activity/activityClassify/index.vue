@@ -1,14 +1,16 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="分类id" prop="classifyId">
+      
+      <!-- <el-form-item label="分类id" prop="classifyId">
         <el-input
           v-model="queryParams.classifyId"
           placeholder="请输入分类id"
           clearable
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
+
       <el-form-item label="分类编号" prop="classifyNum">
         <el-input
           v-model="queryParams.classifyNum"
@@ -64,7 +66,8 @@
           v-hasPermi="['activity:activityClassify:remove']"
         >删除</el-button>
       </el-col>
-      <el-col :span="1.5">
+
+      <!-- <el-col :span="1.5">
         <el-button
           type="warning"
           plain
@@ -73,13 +76,14 @@
           @click="handleExport"
           v-hasPermi="['activity:activityClassify:export']"
         >导出</el-button>
-      </el-col>
+      </el-col> -->
+      
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="activityClassifyList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="分类id" align="center" prop="classifyId" />
+      <!-- <el-table-column label="分类id" align="center" prop="classifyId" /> -->
       <el-table-column label="分类编号" align="center" prop="classifyNum" />
       <el-table-column label="分类名称" align="center" prop="classifyName" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">

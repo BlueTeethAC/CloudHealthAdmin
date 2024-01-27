@@ -1,14 +1,14 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="活动id" prop="activityId">
+      <!-- <el-form-item label="活动id" prop="activityId">
         <el-input
           v-model="queryParams.activityId"
           placeholder="请输入活动id"
           clearable
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="活动名" prop="activityName">
         <el-input
           v-model="queryParams.activityName"
@@ -17,6 +17,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+
       <el-form-item label="活动时间" prop="activityDate">
         <el-date-picker clearable
           v-model="queryParams.activityDate"
@@ -25,14 +26,28 @@
           placeholder="请选择活动时间">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="系列分类" prop="activityClassify">
-        <el-input
+      
+      <el-form-item label="活动分类" prop="activityClassify">
+        <!-- <el-input
           v-model="queryParams.activityClassify"
           placeholder="请输入系列分类"
           clearable
           @keyup.enter.native="handleQuery"
-        />
+        /> -->
+        <el-select
+          v-model="queryParams.activityClassify"
+          placeholder="请选择活动分类"
+        >
+          <el-option
+            v-for="item in selectActivityClassify"
+            :key="item.classifyNum"
+            :label="item.classifyName"
+            :value="item.classifyNum"
+          >
+          </el-option>
+        </el-select>
       </el-form-item>
+      
       <el-form-item label="是否免费 " prop="isFree">
         <el-select v-model="queryParams.isFree" placeholder="请选择是否免费 " clearable>
           <el-option
@@ -43,14 +58,14 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="价格" prop="activityPrice">
+      <!-- <el-form-item label="价格" prop="activityPrice">
         <el-input
           v-model="queryParams.activityPrice"
           placeholder="请输入价格"
           clearable
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="活动地点" prop="activityPlace">
         <el-input
           v-model="queryParams.activityPlace"
@@ -70,7 +85,7 @@
       <el-form-item label="审核状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择审核状态" clearable>
           <el-option
-            v-for="dict in dict.type.process_status"
+            v-for="dict in dict.type.video_status"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -84,7 +99,7 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           type="primary"
           plain
@@ -125,7 +140,7 @@
           @click="handleExport"
           v-hasPermi="['activity:activityInfo:export']"
         >导出</el-button>
-      </el-col>
+      </el-col> -->
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -138,7 +153,13 @@
           <span>{{ parseTime(scope.row.activityDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="系列分类" align="center" prop="activityClassify" />
+
+      <el-table-column label="活动分类" align="center" prop="activityClassify">
+        <template slot-scope="scope">
+          <span>{{getActivityClassify(scope.row.activityClassify)}}</span>
+        </template>
+      </el-table-column>
+      
       <el-table-column label="是否免费 " align="center" prop="isFree">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.is_free" :value="scope.row.isFree"/>
@@ -149,7 +170,7 @@
       <el-table-column label="发布人id" align="center" prop="publishId" />
       <el-table-column label="审核状态" align="center" prop="status">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.process_status" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.video_status" :value="scope.row.status"/>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -160,14 +181,25 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['activity:activityInfo:edit']"
-          >修改</el-button>
+            :disabled="scope.row.status != 0"
+          >审核</el-button>
+
           <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['activity:activityInfo:edit']"
+            :disabled="scope.row.status != 2"
+          >下架</el-button>
+
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['activity:activityInfo:remove']"
-          >删除</el-button>
+          >删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -182,7 +214,7 @@
 
     <!-- 添加或修改线下活动对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px" disabled>
         <el-form-item label="活动名" prop="activityName">
           <el-input v-model="form.activityName" placeholder="请输入活动名" />
         </el-form-item>
@@ -194,8 +226,40 @@
             placeholder="请选择活动时间">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="系列分类" prop="activityClassify">
-          <el-input v-model="form.activityClassify" placeholder="请输入系列分类" />
+
+        <!-- 活动封面 -->
+        <el-form-item label="活动封面" prop="activityPhoto">
+          <!-- <el-input v-model="form.videoPhoto" placeholder="请上传视频封面" /> -->
+          <el-upload
+            class="avatar-uploader"
+            :action="uploadFileUrl"
+            :show-file-list="false"
+            :on-success="photoHandleAvatarSuccess"
+            :before-upload="photoBeforeAvatarUpload"
+          >
+            <img
+              v-if="form.activityPhoto"
+              :src="form.activityPhoto"
+              class="avatar"
+            />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+
+        <el-form-item label="活动分类" prop="activityClassify">
+          <!-- <el-input v-model="form.activityClassify" placeholder="请选择活动分类" /> -->
+          <el-select
+            v-model="form.activityClassify"
+            placeholder="请选择活动分类"
+          >
+            <el-option
+              v-for="item in selectActivityClassify"
+              :key="item.classifyNum"
+              :label="item.classifyName"
+              :value="item.classifyNum"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="是否免费 " prop="isFree">
           <el-select v-model="form.isFree" placeholder="请选择是否免费 ">
@@ -216,7 +280,7 @@
         <el-form-item label="发布人id" prop="publishId">
           <el-input v-model="form.publishId" placeholder="请输入发布人id" />
         </el-form-item>
-        <el-form-item label="审核状态" prop="status">
+        <!-- <el-form-item label="审核状态" prop="status">
           <el-select v-model="form.status" placeholder="请选择审核状态">
             <el-option
               v-for="dict in dict.type.process_status"
@@ -225,10 +289,12 @@
               :value="parseInt(dict.value)"
             ></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="success" @click="processForm(2)" v-show="form.status == 0" >审核通过</el-button>
+        <el-button type="danger" @click="processForm(1)" v-show="form.status == 0" >审核不通过</el-button>
+        <el-button type="danger" @click="processForm(3)" v-show="form.status == 2" >下 架</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -238,11 +304,20 @@
 <script>
 import { listActivityInfo, getActivityInfo, delActivityInfo, addActivityInfo, updateActivityInfo } from "@/api/activity/activityInfo";
 
+import { listActivityClassify } from "@/api/activity/activityClassify";
+
 export default {
   name: "ActivityInfo",
-  dicts: ['process_status', 'is_free'],
+  dicts: ['process_status', 'is_free','video_status'],
   data() {
     return {
+
+      // 文件上传地址
+      uploadFileUrl: process.env.VUE_APP_BASE_API + "/minio/file/upload", // 上传文件服务器地址
+
+      // 用于选择的活动分类
+      selectActivityClassify: null,
+
       // 遮罩层
       loading: true,
       // 选中数组
@@ -267,6 +342,7 @@ export default {
         pageSize: 10,
         activityId: null,
         activityName: null,
+        activityPhoto: null,
         activityDate: null,
         activityClassify: null,
         isFree: null,
@@ -304,6 +380,11 @@ export default {
     };
   },
   created() {
+    // 获得活动分类选项
+    listActivityClassify().then((res) => {
+      this.selectActivityClassify = res.rows;
+    });
+
     this.getList();
   },
   methods: {
@@ -326,6 +407,7 @@ export default {
       this.form = {
         activityId: null,
         activityName: null,
+        activityPhoto: null,
         activityDate: null,
         activityClassify: null,
         isFree: null,
@@ -403,7 +485,75 @@ export default {
       this.download('activity/activityInfo/export', {
         ...this.queryParams
       }, `activityInfo_${new Date().getTime()}.xlsx`)
-    }
+    },
+
+    // 从 activityClassify 中获取对应的值
+    getActivityClassify(keyValue) {
+      let resultName = "未分类";
+
+      this.selectActivityClassify.forEach((element) => {
+        if (element.classifyNum == keyValue) {
+          resultName = element.classifyName;
+        }
+      });
+
+      return resultName;
+    },
+
+
+    /** 审核方法 */
+    processForm(status) {
+
+      // 赋予状态值
+      this.form.status = status;
+
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          if (this.form.activityId != null) {
+            updateActivityInfo(this.form).then(response => {
+              this.$modal.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            });
+          } else {
+            addActivityInfo(this.form).then(response => {
+              this.$modal.msgSuccess("新增成功");
+              this.open = false;
+              this.getList();
+            });
+          }
+        }
+      });
+    },
+
   }
 };
 </script>
+
+
+<style>
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+  object-fit: cover;
+}
+</style>

@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="Activity" id="ActivityResult">
         <result property="activityId"    column="activity_id"    />
         <result property="activityName"    column="activity_name"    />
+        <result property="activityPhoto"    column="activity_photo"    />
         <result property="activityDate"    column="activity_date"    />
         <result property="activityClassify"    column="activity_classify"    />
         <result property="isFree"    column="is_free"    />
@@ -17,7 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectActivityVo">
-        select activity_id, activity_name, activity_date, activity_classify, is_free, activity_price, activity_place, publish_id, status from ch_activity
+        select activity_id, activity_name, activity_photo, activity_date, activity_classify, is_free, activity_price, activity_place, publish_id, status from ch_activity
     </sql>
 
     <select id="selectActivityList" parameterType="Activity" resultMap="ActivityResult">
@@ -25,6 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="activityId != null "> and activity_id = #{activityId}</if>
             <if test="activityName != null  and activityName != ''"> and activity_name like concat('%', #{activityName}, '%')</if>
+            <if test="activityPhoto != null  and activityPhoto != ''"> and activity_photo like concat('%', #{activityPhoto}, '%')</if>
             <if test="activityDate != null "> and activity_date = #{activityDate}</if>
             <if test="activityClassify != null "> and activity_classify = #{activityClassify}</if>
             <if test="isFree != null "> and is_free = #{isFree}</if>
@@ -44,6 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into ch_activity
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="activityName != null and activityName != ''">activity_name,</if>
+            <if test="activityPhoto != null and activityPhoto != ''">activity_photo,</if>
             <if test="activityDate != null">activity_date,</if>
             <if test="activityClassify != null">activity_classify,</if>
             <if test="isFree != null">is_free,</if>
@@ -54,6 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="activityName != null and activityName != ''">#{activityName},</if>
+            <if test="activityPhoto != null and activityPhoto != ''">#{activityPhoto},</if>
             <if test="activityDate != null">#{activityDate},</if>
             <if test="activityClassify != null">#{activityClassify},</if>
             <if test="isFree != null">#{isFree},</if>
@@ -68,6 +72,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update ch_activity
         <trim prefix="SET" suffixOverrides=",">
             <if test="activityName != null and activityName != ''">activity_name = #{activityName},</if>
+            <if test="activityPhoto != null and activityPhoto != ''">activity_photo = #{activityPhoto},</if>
             <if test="activityDate != null">activity_date = #{activityDate},</if>
             <if test="activityClassify != null">activity_classify = #{activityClassify},</if>
             <if test="isFree != null">is_free = #{isFree},</if>

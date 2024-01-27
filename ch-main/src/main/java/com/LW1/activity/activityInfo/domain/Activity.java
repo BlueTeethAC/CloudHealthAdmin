@@ -25,6 +25,10 @@ public class Activity extends BaseEntity
     @Excel(name = "活动名")
     private String activityName;
 
+    /** 封面地址 */
+    @Excel(name = "封面地址")
+    private String activityPhoto;
+
     /** 活动时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "活动时间", width = 30, dateFormat = "yyyy-MM-dd")
@@ -40,7 +44,7 @@ public class Activity extends BaseEntity
 
     /** 价格 */
     @Excel(name = "价格")
-    private Long activityPrice;
+    private Float activityPrice;
 
     /** 活动地点 */
     @Excel(name = "活动地点")
@@ -77,7 +81,14 @@ public class Activity extends BaseEntity
         this.activityDate = activityDate;
     }
 
-    public Date getActivityDate() 
+    public String getActivityPhoto() {
+        return activityPhoto;
+    }
+    public void setActivityPhoto(String activityPhoto) {
+        this.activityPhoto = activityPhoto;
+    }
+
+    public Date getActivityDate()
     {
         return activityDate;
     }
@@ -99,12 +110,12 @@ public class Activity extends BaseEntity
     {
         return isFree;
     }
-    public void setActivityPrice(Long activityPrice) 
+    public void setActivityPrice(Float activityPrice)
     {
         this.activityPrice = activityPrice;
     }
 
-    public Long getActivityPrice() 
+    public Float getActivityPrice()
     {
         return activityPrice;
     }
@@ -141,6 +152,7 @@ public class Activity extends BaseEntity
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("activityId", getActivityId())
             .append("activityName", getActivityName())
+            .append("activityPhoto", getActivityPhoto())
             .append("activityDate", getActivityDate())
             .append("activityClassify", getActivityClassify())
             .append("isFree", getIsFree())

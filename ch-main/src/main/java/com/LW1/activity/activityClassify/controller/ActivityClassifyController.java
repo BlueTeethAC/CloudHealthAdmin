@@ -37,7 +37,7 @@ public class ActivityClassifyController extends BaseController
     /**
      * 查询活动分类列表
      */
-    @PreAuthorize("@ss.hasPermi('activity:activityClassify:list')")
+    // @PreAuthorize("@ss.hasPermi('activity:activityClassify:list')")
     @GetMapping("/list")
     public TableDataInfo list(ActivityClassify activityClassify)
     {
