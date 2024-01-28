@@ -1,6 +1,9 @@
 package com.LW1.userAdmin.roleProcess.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.LW1.userAdmin.roleProcess.mapper.RoleAuthenticationMapper;
@@ -89,5 +92,30 @@ public class RoleAuthenticationServiceImpl implements IRoleAuthenticationService
     public int deleteRoleAuthenticationById(Long id)
     {
         return roleAuthenticationMapper.deleteRoleAuthenticationById(id);
+    }
+
+
+    /**
+     * 审核角色认证
+     *
+     * @param roleAuthentication 角色认证审核
+     * @return 结果
+     */
+    @Override
+    public int updateProcessRoleAuthentication(RoleAuthentication roleAuthentication) {
+
+        // 修改审核表状态
+        int i = roleAuthenticationMapper.updateRoleAuthentication(roleAuthentication);
+
+        System.err.println("i："+i);
+
+        if (i == 1 && (roleAuthentication.getStatus() == 1)){
+            Map<String,Long> map = new HashMap<>();
+            map.put("userId",roleAuthentication.getUserId());
+            map.put("roleId",roleAuthentication.getRole());
+            return roleAuthenticationMapper.updateUserRoleByUserId(map);
+        }
+
+        return i;
     }
 }

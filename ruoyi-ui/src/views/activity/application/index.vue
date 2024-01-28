@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="报名信息id" prop="infoId">
+      <el-form-item label="信息id" prop="infoId">
         <el-input
           v-model="queryParams.infoId"
           placeholder="请输入报名信息id"
@@ -17,7 +17,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="报名用户 id" prop="userId">
+      <el-form-item label="用户id" prop="userId">
         <el-input
           v-model="queryParams.userId"
           placeholder="请输入报名用户 id"
@@ -25,7 +25,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="报名审核状态" prop="status">
+      <el-form-item label="审核状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择报名审核状态" clearable>
           <el-option
             v-for="dict in dict.type.process_status"
@@ -42,7 +42,7 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           type="primary"
           plain
@@ -51,7 +51,7 @@
           @click="handleAdd"
           v-hasPermi="['activity:application:add']"
         >新增</el-button>
-      </el-col>
+      </el-col> -->
       <el-col :span="1.5">
         <el-button
           type="success"
@@ -63,7 +63,7 @@
           v-hasPermi="['activity:application:edit']"
         >修改</el-button>
       </el-col>
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           type="danger"
           plain
@@ -73,7 +73,7 @@
           @click="handleDelete"
           v-hasPermi="['activity:application:remove']"
         >删除</el-button>
-      </el-col>
+      </el-col> -->
       <el-col :span="1.5">
         <el-button
           type="warning"

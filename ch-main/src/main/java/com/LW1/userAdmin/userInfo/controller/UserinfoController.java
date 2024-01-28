@@ -37,7 +37,7 @@ public class UserinfoController extends BaseController
     /**
      * 查询用户信息列表
      */
-    @PreAuthorize("@ss.hasPermi('userAdmin:userInfo:list')")
+    // @PreAuthorize("@ss.hasPermi('userAdmin:userInfo:list')")
     @GetMapping("/list")
     public TableDataInfo list(Userinfo userinfo)
     {

@@ -42,3 +42,15 @@ export function delRoleProcess(id) {
     method: 'delete'
   })
 }
+
+
+
+// 审核用户角色申报
+export function processRoleApplication(data) {
+  return request({
+    url: '/userAdmin/roleProcess/process',
+    method: 'put',
+    data: data
+  })
+}
+

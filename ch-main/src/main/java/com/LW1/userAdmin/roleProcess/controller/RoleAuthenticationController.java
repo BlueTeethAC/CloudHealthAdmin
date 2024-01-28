@@ -101,4 +101,18 @@ public class RoleAuthenticationController extends BaseController
     {
         return toAjax(roleAuthenticationService.deleteRoleAuthenticationByIds(ids));
     }
+
+
+    /**
+     * 审核角色申报
+     */
+    @PreAuthorize("@ss.hasPermi('userAdmin:roleProcess:edit')")
+    @Log(title = "角色认证审核", businessType = BusinessType.UPDATE)
+    @PutMapping({"/process"})
+    public AjaxResult processEdit(@RequestBody RoleAuthentication roleAuthentication)
+    {
+        // 执行审核方法 修改审核表并修改角色
+        return toAjax(roleAuthenticationService.updateProcessRoleAuthentication(roleAuthentication));
+    }
+
 }

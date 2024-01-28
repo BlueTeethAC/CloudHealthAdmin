@@ -37,7 +37,7 @@ public class RoleinfoController extends BaseController
     /**
      * 查询角色权限列表
      */
-    @PreAuthorize("@ss.hasPermi('userAdmin:roleinfo:list')")
+    // @PreAuthorize("@ss.hasPermi('userAdmin:roleinfo:list')")
     @GetMapping("/list")
     public TableDataInfo list(Roleinfo roleinfo)
     {

@@ -58,4 +58,13 @@ public interface IRoleAuthenticationService
      * @return 结果
      */
     public int deleteRoleAuthenticationById(Long id);
+
+
+    /**
+     * 审核角色认证
+     *
+     * @param roleAuthentication 角色认证审核
+     * @return 结果
+     */
+    public int updateProcessRoleAuthentication(RoleAuthentication roleAuthentication);
 }

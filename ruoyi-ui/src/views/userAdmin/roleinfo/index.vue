@@ -1,14 +1,14 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="信息id" prop="infoId">
+      <!-- <el-form-item label="信息id" prop="infoId">
         <el-input
           v-model="queryParams.infoId"
           placeholder="请输入信息id"
           clearable
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="权限id" prop="roleId">
         <el-input
           v-model="queryParams.roleId"
@@ -79,7 +79,7 @@
 
     <el-table v-loading="loading" :data="roleinfoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="信息id" align="center" prop="infoId" />
+      <!-- <el-table-column label="信息id" align="center" prop="infoId" /> -->
       <el-table-column label="权限id" align="center" prop="roleId" />
       <el-table-column label="角色名" align="center" prop="roleName" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">

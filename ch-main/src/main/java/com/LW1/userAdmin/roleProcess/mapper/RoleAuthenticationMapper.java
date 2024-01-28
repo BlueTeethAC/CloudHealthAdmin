@@ -1,6 +1,8 @@
 package com.LW1.userAdmin.roleProcess.mapper;
 
 import java.util.List;
+import java.util.Map;
+
 import com.LW1.userAdmin.roleProcess.domain.RoleAuthentication;
 
 /**
@@ -58,4 +60,7 @@ public interface RoleAuthenticationMapper
      * @return 结果
      */
     public int deleteRoleAuthenticationByIds(Long[] ids);
+
+    // 按照 申报用户 id 修改其角色
+    public int updateUserRoleByUserId(Map map);
 }

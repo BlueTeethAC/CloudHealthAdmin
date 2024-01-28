@@ -679,7 +679,7 @@ export default {
       this.$loading();
       const isMP4 = file.type === "video/mp4";
       if (!isMP4) {
-        this.$message.error("上传文件只能是 JPG 格式!");
+        this.$message.error("上传文件只能是 mp4 格式!");
         this.$loading().close();
         return isMP4;
       }

@@ -73,4 +73,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+
+    <!--  按照用户id 修改其用户角色  -->
+    <update id="updateUserRoleByUserId" parameterType="Map">
+        update sys_user_role set role_id = #{roleId} where user_id = #{userId};
+    </update>
+
 </mapper>
