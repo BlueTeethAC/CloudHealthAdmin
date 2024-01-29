@@ -338,7 +338,7 @@ export default {
           {
             required: true,
             message:
-              "审核状态   0：待审核   1：审核通过   2：审核不通过不能为空",
+              "审核状态不能为空",
             trigger: "change",
           },
         ],
