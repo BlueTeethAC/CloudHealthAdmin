@@ -1,6 +1,8 @@
 package com.LW1.healthConsult.feedBackInfo.service.impl;
 
 import java.util.List;
+
+import com.LW1.healthConsult.feedBackInfo.domain.FeedbackinfoWithRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.LW1.healthConsult.feedBackInfo.mapper.FeedbackinfoMapper;
@@ -89,5 +91,12 @@ public class FeedbackinfoServiceImpl implements IFeedbackinfoService
     public int deleteFeedbackinfoByFeedbackinfoId(Long feedbackinfoId)
     {
         return feedbackinfoMapper.deleteFeedbackinfoByFeedbackinfoId(feedbackinfoId);
+    }
+
+
+    // 查询历史信息集合搭配 role
+    @Override
+    public List<FeedbackinfoWithRole> getListInfoWithRole(Long consultationFormId) {
+        return feedbackinfoMapper.getListInfoWithRole(consultationFormId);
     }
 }

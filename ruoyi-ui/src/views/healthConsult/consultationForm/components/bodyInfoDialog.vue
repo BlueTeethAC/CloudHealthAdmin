@@ -42,15 +42,16 @@
 
           <el-row>
             <el-col :span="12">
-              <el-form-item label="咨询日期" prop="inputDate">
+              <el-form-item label="信息日期" prop="inputDate">
                 <el-date-picker
                   v-model="bodyInfoFormData.inputDate"
-                  format="HH:mm:ss"
-                  value-format="HH:mm:ss"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
                   :style="{ width: '100%' }"
                   placeholder="请输入咨询日期"
                   clearable
                 ></el-date-picker>
+                
               </el-form-item>
             </el-col>
           </el-row>
@@ -386,6 +387,7 @@ export default {
       // 查询数据
       getBodyinfo(this.infoid).then((res) => {
         this.bodyInfoFormData = res.data;
+        console.log(this.bodyInfoFormData.inputDate)
       });
     },
 

@@ -9,9 +9,9 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="咨询表id" prop="ConsultationFormId">
+      <el-form-item label="咨询表id" prop="consultationFormId">
         <el-input
-          v-model="queryParams.ConsultationFormId"
+          v-model="queryParams.consultationFormId"
           placeholder="请输入咨询表id"
           clearable
           @keyup.enter.native="handleQuery"
@@ -32,7 +32,7 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           type="primary"
           plain
@@ -73,14 +73,14 @@
           @click="handleExport"
           v-hasPermi="['healthConsult:feedBackInfo:export']"
         >导出</el-button>
-      </el-col>
+      </el-col> -->
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="feedBackInfoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="反馈id" align="center" prop="feedbackinfoId" />
-      <el-table-column label="咨询表id" align="center" prop="ConsultationFormId" />
+      <el-table-column label="咨询表id" align="center" prop="consultationFormId" />
       <el-table-column label="回复者id" align="center" prop="replyPersonId" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -91,13 +91,13 @@
             @click="handleUpdate(scope.row)"
             v-hasPermi="['healthConsult:feedBackInfo:edit']"
           >修改</el-button>
-          <el-button
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['healthConsult:feedBackInfo:remove']"
-          >删除</el-button>
+          >删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -113,8 +113,13 @@
     <!-- 添加或修改资讯信息反馈对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="咨询表id" prop="ConsultationFormId">
-          <el-input v-model="form.ConsultationFormId" placeholder="请输入咨询表id" />
+
+        <el-form-item label="">
+          <el-button type="primary">查看历史信息</el-button>
+        </el-form-item>
+
+        <el-form-item label="咨询表id" prop="consultationFormId">
+          <el-input v-model="form.consultationFormId" placeholder="请输入咨询表id" />
         </el-form-item>
         <el-form-item label="回复者id" prop="replyPersonId">
           <el-input v-model="form.replyPersonId" placeholder="请输入回复者id" />
@@ -161,14 +166,14 @@ export default {
         pageNum: 1,
         pageSize: 10,
         feedbackinfoId: null,
-        ConsultationFormId: null,
+        consultationFormId: null,
         replyPersonId: null,
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        ConsultationFormId: [
+        consultationFormId: [
           { required: true, message: "咨询表id不能为空", trigger: "blur" }
         ],
         replyPersonId: [
@@ -202,7 +207,7 @@ export default {
     reset() {
       this.form = {
         feedbackinfoId: null,
-        ConsultationFormId: null,
+        consultationFormId: null,
         replyPersonId: null,
         replyInfo: null
       };
@@ -275,7 +280,9 @@ export default {
       this.download('healthConsult/feedBackInfo/export', {
         ...this.queryParams
       }, `feedBackInfo_${new Date().getTime()}.xlsx`)
-    }
+    },
+
+    
   }
 };
 </script>

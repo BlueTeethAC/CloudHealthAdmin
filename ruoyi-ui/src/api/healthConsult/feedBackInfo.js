@@ -19,6 +19,7 @@ export function getFeedBackInfo(feedbackinfoId) {
 
 // 新增资讯信息反馈
 export function addFeedBackInfo(data) {
+  console.log(data)
   return request({
     url: '/healthConsult/feedBackInfo',
     method: 'post',
@@ -40,5 +41,14 @@ export function delFeedBackInfo(feedbackinfoId) {
   return request({
     url: '/healthConsult/feedBackInfo/' + feedbackinfoId,
     method: 'delete'
+  })
+}
+
+
+// 根据咨询单ID 查询历史信息
+export function getListInfoWithRole(consultationFormId){
+  return request({
+    url: '/healthConsult/feedBackInfo/list/'+consultationFormId,
+    method: 'get'
   })
 }

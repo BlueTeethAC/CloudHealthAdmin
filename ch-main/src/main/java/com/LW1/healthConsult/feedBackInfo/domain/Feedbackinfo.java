@@ -20,7 +20,8 @@ public class Feedbackinfo extends BaseEntity
 
     /** 咨询表id */
     @Excel(name = "咨询表id")
-    private Long ConsultationFormId;
+    private Long consultationFormId;
+
 
     /** 回复者id */
     @Excel(name = "回复者id")
@@ -40,12 +41,12 @@ public class Feedbackinfo extends BaseEntity
     }
     public void setConsultationFormId(Long ConsultationFormId) 
     {
-        this.ConsultationFormId = ConsultationFormId;
+        this.consultationFormId = ConsultationFormId;
     }
 
     public Long getConsultationFormId() 
     {
-        return ConsultationFormId;
+        return consultationFormId;
     }
     public void setReplyPersonId(Long replyPersonId) 
     {

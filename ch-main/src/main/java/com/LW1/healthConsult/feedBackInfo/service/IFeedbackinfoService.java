@@ -2,6 +2,7 @@ package com.LW1.healthConsult.feedBackInfo.service;
 
 import java.util.List;
 import com.LW1.healthConsult.feedBackInfo.domain.Feedbackinfo;
+import com.LW1.healthConsult.feedBackInfo.domain.FeedbackinfoWithRole;
 
 /**
  * 资讯信息反馈Service接口
@@ -58,4 +59,9 @@ public interface IFeedbackinfoService
      * @return 结果
      */
     public int deleteFeedbackinfoByFeedbackinfoId(Long feedbackinfoId);
+
+
+
+    // 查询历史信息集合搭配 role
+    public List<FeedbackinfoWithRole> getListInfoWithRole(Long consultationFormId );
 }

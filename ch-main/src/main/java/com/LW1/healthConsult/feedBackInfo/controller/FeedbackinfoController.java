@@ -101,4 +101,13 @@ public class FeedbackinfoController extends BaseController
     {
         return toAjax(feedbackinfoService.deleteFeedbackinfoByFeedbackinfoIds(feedbackinfoIds));
     }
+
+
+    // 查询历史信息用的接口
+    @GetMapping("/list/{consultationFormId}")
+    public TableDataInfo getListInfoWithRole(@PathVariable("consultationFormId") Long consultationFormId){
+        System.err.println(feedbackinfoService.getListInfoWithRole(consultationFormId));
+        return getDataTable(feedbackinfoService.getListInfoWithRole(consultationFormId));
+    }
+
 }

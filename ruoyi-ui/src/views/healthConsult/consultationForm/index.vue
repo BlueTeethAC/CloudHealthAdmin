@@ -189,12 +189,51 @@
             ></el-option>
           </el-select>
         </el-form-item>
+
         <el-form-item label="健康建议" prop="questionnaireRecordings">
-          <el-input type="textarea" rows="6" v-model="form.questionnaireRecordings" placeholder="请输入建议" />
+          <el-input type="textarea" rows="6" v-model="form.questionnaireRecordings" placeholder="请输入建议"/>
         </el-form-item>
+
+        <!-- 历史咨询记录 -->
+        <hr/>
+        <div v-for="(item,index) in feedBackInfo" :key="index">
+
+          <!-- 咨询人信息 -->
+          <el-row :gutter="16" v-show="item.role!=6">
+            <!-- 回复者 -->
+            <el-col :span="5">
+              咨询人{{item.replyPersonId}}
+            </el-col>
+            <!-- 回复信息 -->
+            <el-col :span="12">
+              {{item.replyInfo}}
+            </el-col>
+          </el-row>
+
+           <!-- 营养师 -->
+           <el-row :gutter="16" v-show="item.role==6">
+            <!-- 回复者 -->
+            <el-col :span="5">
+              营养师{{item.replyPersonId}}
+            </el-col>
+            <!-- 回复信息 -->
+            <el-col :span="12">
+              {{item.replyInfo}}
+            </el-col>
+          </el-row>
+
+        </div>
+
+        <br/>
+        <br/>
+
+        <el-form-item label="回复" prop="">
+          <el-input type="textarea" rows="6" placeholder="请输入建议"/>
+        </el-form-item>
+      
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="primary" @click="submitForm" v-show="form.state == 0 || form.state == 1">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -207,6 +246,8 @@
 
 <script>
 import { listConsultationForm, getConsultationForm, delConsultationForm, addConsultationForm, updateConsultationForm } from "@/api/healthConsult/consultationForm";
+
+import { listFeedBackInfo, getListInfoWithRole } from "@/api/healthConsult/feedBackInfo"
 
 // 引入健康信息详情组件
 import bodyInfoDialog from './components/bodyInfoDialog.vue';
@@ -222,6 +263,9 @@ export default {
 
   data() {
     return {
+
+      // 咨询回复信息
+      feedBackInfo: null,
 
       // 用户信息弹窗状态
       bodyInfoOpen: false,
@@ -278,6 +322,10 @@ export default {
         state: [
           { required: true, message: "咨询单状态不能为空", trigger: "change" }
         ],
+        questionnaireRecordings: [
+          { required: true, message:"咨询建议不能为空", trigger: "blur" }
+        ]
+
       }
     };
   },
@@ -338,10 +386,14 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
+
       const consultationFormId = row.consultationFormId || this.ids
       getConsultationForm(consultationFormId).then(response => {
         this.form = response.data;
         this.open = true;
+
+        // 查询追问信息
+        this.getHistoryInfo(this.form.consultationFormId);
 
         this.dialogBodyInfoId = this.form.bodyinfoId;
 
@@ -352,6 +404,9 @@ export default {
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
+
+        this.form.state = 1;// 表单状态修改为已回复
+
         if (valid) {
           if (this.form.consultationFormId != null) {
             updateConsultationForm(this.form).then(response => {
@@ -389,6 +444,15 @@ export default {
     // 子组件修改父组件属性的方法
     closeDialog(){
       this.bodyInfoOpen = false;
+    },
+
+    // 根据咨询表id 查询咨询历史信息
+    getHistoryInfo(formId){
+
+      getListInfoWithRole(formId).then(res=>{
+        this.feedBackInfo = res.rows;// 赋值
+        console.log(this.feedBackInfo)
+      });
     }
   }
 };

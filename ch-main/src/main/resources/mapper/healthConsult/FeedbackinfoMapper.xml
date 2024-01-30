@@ -6,20 +6,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <resultMap type="Feedbackinfo" id="FeedbackinfoResult">
         <result property="feedbackinfoId"    column="FeedBackInfo_id"    />
-        <result property="ConsultationFormId"    column="ConsultationFormId"    />
+        <result property="consultationFormId"    column="consultationFormId"    />
         <result property="replyPersonId"    column="replyPersonId"    />
         <result property="replyInfo"    column="replyInfo"    />
     </resultMap>
 
     <sql id="selectFeedbackinfoVo">
-        select FeedBackInfo_id, ConsultationFormId, replyPersonId, replyInfo from ch_feedbackinfo
+        select FeedBackInfo_id, consultationFormId, replyPersonId, replyInfo from ch_feedbackinfo
     </sql>
 
     <select id="selectFeedbackinfoList" parameterType="Feedbackinfo" resultMap="FeedbackinfoResult">
         <include refid="selectFeedbackinfoVo"/>
         <where>  
             <if test="feedbackinfoId != null "> and FeedBackInfo_id = #{feedbackinfoId}</if>
-            <if test="ConsultationFormId != null "> and ConsultationFormId = #{ConsultationFormId}</if>
+            <if test="consultationFormId != null "> and consultationFormId = #{consultationFormId}</if>
             <if test="replyPersonId != null "> and replyPersonId = #{replyPersonId}</if>
         </where>
     </select>
@@ -32,12 +32,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertFeedbackinfo" parameterType="Feedbackinfo" useGeneratedKeys="true" keyProperty="feedbackinfoId">
         insert into ch_feedbackinfo
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="ConsultationFormId != null">ConsultationFormId,</if>
+            <if test="consultationFormId != null">consultationFormId,</if>
             <if test="replyPersonId != null">replyPersonId,</if>
             <if test="replyInfo != null and replyInfo != ''">replyInfo,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="ConsultationFormId != null">#{ConsultationFormId},</if>
+            <if test="consultationFormId != null">#{consultationFormId},</if>
             <if test="replyPersonId != null">#{replyPersonId},</if>
             <if test="replyInfo != null and replyInfo != ''">#{replyInfo},</if>
          </trim>
@@ -46,7 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateFeedbackinfo" parameterType="Feedbackinfo">
         update ch_feedbackinfo
         <trim prefix="SET" suffixOverrides=",">
-            <if test="ConsultationFormId != null">ConsultationFormId = #{ConsultationFormId},</if>
+            <if test="consultationFormId != null">consultationFormId = #{consultationFormId},</if>
             <if test="replyPersonId != null">replyPersonId = #{replyPersonId},</if>
             <if test="replyInfo != null and replyInfo != ''">replyInfo = #{replyInfo},</if>
         </trim>
@@ -63,4 +63,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{feedbackinfoId}
         </foreach>
     </delete>
+
+
+
+    <select id="getListInfoWithRole" parameterType="Long" resultType="com.LW1.healthConsult.feedBackInfo.domain.FeedbackinfoWithRole">
+        select c1.FeedBackInfo_id, c1.consultationFormId, c1.replyPersonId, c1.replyInfo,c2.user_role as role from ch_feedbackinfo c1,ch_userInfo c2
+        where c1.replyPersonId = c2.user_id and c1.consultationFormId = #{consultationFormId}
+    </select>
+
 </mapper>
