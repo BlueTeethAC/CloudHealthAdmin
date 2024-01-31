@@ -1,6 +1,13 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form
+      :model="queryParams"
+      ref="queryForm"
+      size="small"
+      :inline="true"
+      v-show="showSearch"
+      label-width="68px"
+    >
       <el-form-item label="咨询表id" prop="consultationFormId">
         <el-input
           v-model="queryParams.consultationFormId"
@@ -26,11 +33,13 @@
         />
       </el-form-item> -->
       <el-form-item label="输入日期" prop="inputDate">
-        <el-date-picker clearable
+        <el-date-picker
+          clearable
           v-model="queryParams.inputDate"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="请选择输入日期">
+          placeholder="请选择输入日期"
+        >
         </el-date-picker>
       </el-form-item>
       <el-form-item label="咨询人id" prop="userId">
@@ -42,7 +51,11 @@
         />
       </el-form-item>
       <el-form-item label="咨询状态" prop="state">
-        <el-select v-model="queryParams.state" placeholder="请选择咨询单状态" clearable>
+        <el-select
+          v-model="queryParams.state"
+          placeholder="请选择咨询单状态"
+          clearable
+        >
           <el-option
             v-for="dict in dict.type.consultation_status"
             :key="dict.value"
@@ -60,8 +73,16 @@
         />
       </el-form-item> -->
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="mini"
+          @click="handleQuery"
+          >搜索</el-button
+        >
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+          >重置</el-button
+        >
       </el-form-item>
     </el-form>
 
@@ -74,7 +95,8 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['healthConsult:consultationForm:add']"
-        >新增</el-button>
+          >新增</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -85,7 +107,8 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['healthConsult:consultationForm:edit']"
-        >修改</el-button>
+          >修改</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -96,7 +119,8 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['healthConsult:consultationForm:remove']"
-        >删除</el-button>
+          >删除</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -106,29 +130,57 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['healthConsult:consultationForm:export']"
-        >导出</el-button>
+          >导出</el-button
+        >
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar
+        :showSearch.sync="showSearch"
+        @queryTable="getList"
+      ></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="consultationFormList" @selection-change="handleSelectionChange">
+    <el-table
+      v-loading="loading"
+      :data="consultationFormList"
+      @selection-change="handleSelectionChange"
+    >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="咨询表id" align="center" prop="consultationFormId" />
-      <el-table-column label="身体健康信息id" align="center" prop="bodyinfoId" />
+      <el-table-column
+        label="咨询表id"
+        align="center"
+        prop="consultationFormId"
+      />
+      <el-table-column
+        label="身体健康信息id"
+        align="center"
+        prop="bodyinfoId"
+      />
       <el-table-column label="健康问卷得分" align="center" prop="score" />
-      <el-table-column label="输入日期" align="center" prop="inputDate" width="180">
+      <el-table-column
+        label="输入日期"
+        align="center"
+        prop="inputDate"
+        width="180"
+      >
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.inputDate, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.inputDate, "{y}-{m}-{d}") }}</span>
         </template>
       </el-table-column>
       <el-table-column label="咨询人id" align="center" prop="userId" />
       <el-table-column label="咨询单状态" align="center" prop="state">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.consultation_status" :value="scope.row.state"/>
+          <dict-tag
+            :options="dict.type.consultation_status"
+            :value="scope.row.state"
+          />
         </template>
       </el-table-column>
       <!-- <el-table-column label="问卷答题记录" align="center" prop="questionnaireRecordings" /> -->
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column
+        label="操作"
+        align="center"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -136,7 +188,8 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['healthConsult:consultationForm:edit']"
-          >处理</el-button>
+            >处理</el-button
+          >
           <!-- <el-button
             size="mini"
             type="text"
@@ -147,9 +200,9 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
@@ -157,30 +210,52 @@
     />
 
     <!-- 添加或修改咨询信息对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+    <el-dialog
+      :title="title"
+      :visible.sync="open"
+      width="500px"
+      append-to-body
+      style="margin-bottom: 100px; margin-top: 100px"
+    >
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <!-- <el-form-item label="身体健康信息id" prop="bodyinfoId"> -->
         <el-form-item label="信息id" prop="bodyinfoId">
           <!-- <el-input v-model="form.bodyinfoId" placeholder="请输入身体健康信息id" /> -->
-          <el-button type="primary" @click="bodyInfoOpen=true">查看健康信息</el-button>
+          <el-button type="primary" @click="bodyInfoOpen = true"
+            >查看健康信息</el-button
+          >
         </el-form-item>
         <el-form-item label="问卷得分" prop="score">
-          <el-input v-model="form.score" placeholder="请输入健康问卷得分" disabled />
+          <el-input
+            v-model="form.score"
+            placeholder="请输入健康问卷得分"
+            disabled
+          />
         </el-form-item>
         <el-form-item label="输入日期" prop="inputDate">
-          <el-date-picker clearable
+          <el-date-picker
+            clearable
             v-model="form.inputDate"
             type="date"
             value-format="yyyy-MM-dd"
             placeholder="请选择输入日期"
-            disabled>
+            disabled
+          >
           </el-date-picker>
         </el-form-item>
         <el-form-item label="咨询人id" prop="userId">
-          <el-input v-model="form.userId" placeholder="请输入输入人 id" disabled />
+          <el-input
+            v-model="form.userId"
+            placeholder="请输入输入人 id"
+            disabled
+          />
         </el-form-item>
         <el-form-item label="咨询状态" prop="state">
-          <el-select v-model="form.state" placeholder="请选择咨询单状态" disabled>
+          <el-select
+            v-model="form.state"
+            placeholder="请选择咨询单状态"
+            disabled
+          >
             <el-option
               v-for="dict in dict.type.consultation_status"
               :key="dict.value"
@@ -191,78 +266,105 @@
         </el-form-item>
 
         <el-form-item label="健康建议" prop="questionnaireRecordings">
-          <el-input type="textarea" rows="6" v-model="form.questionnaireRecordings" placeholder="请输入建议"/>
+          <el-input
+            type="textarea"
+            rows="6"
+            v-model="form.questionnaireRecordings"
+            placeholder="请输入建议"
+          />
         </el-form-item>
 
-        <!-- 历史咨询记录 -->
-        <hr/>
-        <div v-for="(item,index) in feedBackInfo" :key="index">
+        <div v-if="form.state != 0">
+          <hr />
+          <!-- 历史咨询记录 -->
+          <div v-for="(item, index) in feedBackInfo" :key="index">
+            <!-- 咨询人信息 -->
+            <el-row :gutter="16" v-show="item.role != 6">
+              <!-- 回复者 -->
+              <el-col :span="5">
+                <a v-if="item.replyPersonId == form.userId" class="feedBackTxt1"
+                  >咨询人：</a
+                >
+                <a v-if="item.replyPersonId != form.userId" class="feedBackTxt2"
+                  >营养师：</a
+                >
+              </el-col>
+              <!-- 回复信息 -->
+              <el-col :span="12" class="feedBackTxt">
+                {{ item.replyInfo }}
+              </el-col>
+            </el-row>
+            <br />
+          </div>
 
-          <!-- 咨询人信息 -->
-          <el-row :gutter="16" v-show="item.role!=6">
-            <!-- 回复者 -->
-            <el-col :span="5">
-              咨询人{{item.replyPersonId}}
-            </el-col>
-            <!-- 回复信息 -->
-            <el-col :span="12">
-              {{item.replyInfo}}
-            </el-col>
-          </el-row>
+          <br />
 
-           <!-- 营养师 -->
-           <el-row :gutter="16" v-show="item.role==6">
-            <!-- 回复者 -->
-            <el-col :span="5">
-              营养师{{item.replyPersonId}}
-            </el-col>
-            <!-- 回复信息 -->
-            <el-col :span="12">
-              {{item.replyInfo}}
-            </el-col>
-          </el-row>
-
+          <el-form-item label="回复" prop="">
+            <el-input
+              type="textarea"
+              v-model="replayInfo"
+              rows="6"
+              placeholder="请输入建议"
+            />
+          </el-form-item>
         </div>
-
-        <br/>
-        <br/>
-
-        <el-form-item label="回复" prop="">
-          <el-input type="textarea" rows="6" placeholder="请输入建议"/>
-        </el-form-item>
-      
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm" v-show="form.state == 0 || form.state == 1">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="submitForm"
+          v-show="form.state == 0"
+          >确 定</el-button
+        >
+        <el-button
+          type="primary"
+          @click="submitResponse"
+          v-show="form.state == 2"
+          >回 复</el-button
+        >
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
 
-
-    <body-info-dialog @closeDialog="closeDialog" :infoid = "dialogBodyInfoId" :open="bodyInfoOpen"></body-info-dialog>
-
+    <body-info-dialog
+      @closeDialog="closeDialog"
+      :infoid="dialogBodyInfoId"
+      :open="bodyInfoOpen"
+    ></body-info-dialog>
   </div>
 </template>
 
 <script>
-import { listConsultationForm, getConsultationForm, delConsultationForm, addConsultationForm, updateConsultationForm } from "@/api/healthConsult/consultationForm";
+import {
+  listConsultationForm,
+  getConsultationForm,
+  delConsultationForm,
+  addConsultationForm,
+  updateConsultationForm,
+} from "@/api/healthConsult/consultationForm";
 
-import { listFeedBackInfo, getListInfoWithRole } from "@/api/healthConsult/feedBackInfo"
+import {
+  listFeedBackInfo,
+  getListInfoWithRole,
+  addFeedBackInfo,
+} from "@/api/healthConsult/feedBackInfo";
 
 // 引入健康信息详情组件
-import bodyInfoDialog from './components/bodyInfoDialog.vue';
+import bodyInfoDialog from "./components/bodyInfoDialog.vue";
 
 export default {
   name: "ConsultationForm",
-  dicts: ['consultation_status'],
+  dicts: ["consultation_status"],
 
   // 声明组件
-  components:{
-    bodyInfoDialog
+  components: {
+    bodyInfoDialog,
   },
 
   data() {
     return {
+      // 回复信息
+      replayInfo: null,
 
       // 咨询回复信息
       feedBackInfo: null,
@@ -301,32 +403,35 @@ export default {
         inputDate: null,
         userId: null,
         state: null,
-        questionnaireRecordings: null
+        questionnaireRecordings: null,
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
         bodyinfoId: [
-          { required: true, message: "身体健康信息id不能为空", trigger: "blur" }
+          {
+            required: true,
+            message: "身体健康信息id不能为空",
+            trigger: "blur",
+          },
         ],
         score: [
-          { required: true, message: "健康问卷得分不能为空", trigger: "blur" }
+          { required: true, message: "健康问卷得分不能为空", trigger: "blur" },
         ],
         inputDate: [
-          { required: true, message: "输入日期不能为空", trigger: "blur" }
+          { required: true, message: "输入日期不能为空", trigger: "blur" },
         ],
         userId: [
-          { required: true, message: "输入人 id不能为空", trigger: "blur" }
+          { required: true, message: "输入人 id不能为空", trigger: "blur" },
         ],
         state: [
-          { required: true, message: "咨询单状态不能为空", trigger: "change" }
+          { required: true, message: "咨询单状态不能为空", trigger: "change" },
         ],
         questionnaireRecordings: [
-          { required: true, message:"咨询建议不能为空", trigger: "blur" }
-        ]
-
-      }
+          { required: true, message: "咨询建议不能为空", trigger: "blur" },
+        ],
+      },
     };
   },
   created() {
@@ -336,7 +441,7 @@ export default {
     /** 查询咨询信息列表 */
     getList() {
       this.loading = true;
-      listConsultationForm(this.queryParams).then(response => {
+      listConsultationForm(this.queryParams).then((response) => {
         this.consultationFormList = response.rows;
         // console.log(this.consultationFormList);
         this.total = response.total;
@@ -357,7 +462,7 @@ export default {
         inputDate: null,
         userId: null,
         state: null,
-        questionnaireRecordings: null
+        questionnaireRecordings: null,
       };
       this.resetForm("form");
     },
@@ -373,9 +478,9 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.consultationFormId)
-      this.single = selection.length!==1
-      this.multiple = !selection.length
+      this.ids = selection.map((item) => item.consultationFormId);
+      this.single = selection.length !== 1;
+      this.multiple = !selection.length;
     },
     /** 新增按钮操作 */
     handleAdd() {
@@ -387,8 +492,8 @@ export default {
     handleUpdate(row) {
       this.reset();
 
-      const consultationFormId = row.consultationFormId || this.ids
-      getConsultationForm(consultationFormId).then(response => {
+      const consultationFormId = row.consultationFormId || this.ids;
+      getConsultationForm(consultationFormId).then((response) => {
         this.form = response.data;
         this.open = true;
 
@@ -403,19 +508,18 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
-      this.$refs["form"].validate(valid => {
-
-        this.form.state = 1;// 表单状态修改为已回复
+      this.$refs["form"].validate((valid) => {
+        this.form.state = 1; // 表单状态修改为已回复
 
         if (valid) {
           if (this.form.consultationFormId != null) {
-            updateConsultationForm(this.form).then(response => {
+            updateConsultationForm(this.form).then((response) => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addConsultationForm(this.form).then(response => {
+            addConsultationForm(this.form).then((response) => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -427,33 +531,90 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const consultationFormId = row.consultationFormId || this.ids;
-      this.$modal.confirm('是否确认删除咨询信息编号为"' + consultationFormId + '"的数据项？').then(function() {
-        return delConsultationForm(consultationFormId);
-      }).then(() => {
-        this.getList();
-        this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+      this.$modal
+        .confirm(
+          '是否确认删除咨询信息编号为"' + consultationFormId + '"的数据项？'
+        )
+        .then(function () {
+          return delConsultationForm(consultationFormId);
+        })
+        .then(() => {
+          this.getList();
+          this.$modal.msgSuccess("删除成功");
+        })
+        .catch(() => {});
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('healthConsult/consultationForm/export', {
-        ...this.queryParams
-      }, `consultationForm_${new Date().getTime()}.xlsx`)
+      this.download(
+        "healthConsult/consultationForm/export",
+        {
+          ...this.queryParams,
+        },
+        `consultationForm_${new Date().getTime()}.xlsx`
+      );
     },
 
     // 子组件修改父组件属性的方法
-    closeDialog(){
+    closeDialog() {
       this.bodyInfoOpen = false;
     },
 
     // 根据咨询表id 查询咨询历史信息
-    getHistoryInfo(formId){
+    getHistoryInfo(formId) {
+      let query = {
+        consultationFormId: formId,
+      };
 
-      getListInfoWithRole(formId).then(res=>{
-        this.feedBackInfo = res.rows;// 赋值
-        console.log(this.feedBackInfo)
+      listFeedBackInfo(query).then((res) => {
+        this.feedBackInfo = res.rows; // 赋值
+        console.log(this.feedBackInfo);
       });
-    }
-  }
+    },
+
+    // 给予回复按钮
+    submitResponse() {
+      // 定义回复数据
+      let data={
+        consultationFormId: this.form.consultationFormId, // 表单id
+        replyPersonId: this.$store.state.user.id, // 设置当前用户
+        replyInfo: this.replayInfo // 回复内容
+      }
+      // 发送回复
+      addFeedBackInfo(data).then((response) => {
+        this.$modal.msgSuccess("回复成功");
+
+        // 定义数据
+        let formState = {
+          consultationFormId: this.form.consultationFormId,
+          state: 1,
+        }
+
+        // 回复成功后修改表单状态
+        updateConsultationForm(formState).then(res=>{
+          this.$modal.msgSuccess("回复成功");
+          this.open = false;
+          this.getList();
+          this.replayInfo = null;
+        })
+      });
+    },
+  },
 };
 </script>
+
+<style scoped>
+.feedBackTxt {
+  font-size: 15px;
+}
+
+.feedBackTxt1 {
+  color: red;
+  font-size: 18px;
+}
+
+.feedBackTxt2 {
+  color: rgb(59, 137, 192);
+  font-size: 18px;
+}
+</style>

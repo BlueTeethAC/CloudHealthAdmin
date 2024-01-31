@@ -66,9 +66,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
 
-    <select id="getListInfoWithRole" parameterType="Long" resultType="com.LW1.healthConsult.feedBackInfo.domain.FeedbackinfoWithRole">
+    <!--  从移动端数据库中查询用户角色信息  -->
+    <select id="getListInfoWithRolePE" parameterType="Long" resultType="com.LW1.healthConsult.feedBackInfo.domain.FeedbackinfoWithRole">
         select c1.FeedBackInfo_id, c1.consultationFormId, c1.replyPersonId, c1.replyInfo,c2.user_role as role from ch_feedbackinfo c1,ch_userInfo c2
         where c1.replyPersonId = c2.user_id and c1.consultationFormId = #{consultationFormId}
     </select>
+
+
+    <!--  从管理端数据库中查询用户角色信息  -->
+    <select id="getListInfoWithRolePC" parameterType="Long" resultType="com.LW1.healthConsult.feedBackInfo.domain.FeedbackinfoWithRole">
+        select c1.FeedBackInfo_id, c1.consultationFormId, c1.replyPersonId, c1.replyInfo,c2.role_id as role from ch_feedbackinfo c1,sys_user_role c2
+        where c1.replyPersonId = c2.user_id and c1.consultationFormId = #{consultationFormId}
+    </select>
+
+
 
 </mapper>

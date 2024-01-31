@@ -62,6 +62,10 @@ public interface FeedbackinfoMapper
 
 
 
-    // 查询历史信息集合搭配 role
-    public List<FeedbackinfoWithRole> getListInfoWithRole(Long consultationFormId);
+    // 查询移动端历史信息集合搭配 role
+    public List<FeedbackinfoWithRole> getListInfoWithRolePE(Long consultationFormId);
+
+
+    // 查询管理端历史信息集合搭配 role
+    public List<FeedbackinfoWithRole> getListInfoWithRolePC(Long consultationFormId);
 }

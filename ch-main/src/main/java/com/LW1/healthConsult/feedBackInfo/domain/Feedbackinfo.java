@@ -71,7 +71,7 @@ public class Feedbackinfo extends BaseEntity
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("feedbackinfoId", getFeedbackinfoId())
-            .append("ConsultationFormId", getConsultationFormId())
+            .append("consultationFormId", getConsultationFormId())
             .append("replyPersonId", getReplyPersonId())
             .append("replyInfo", getReplyInfo())
             .toString();

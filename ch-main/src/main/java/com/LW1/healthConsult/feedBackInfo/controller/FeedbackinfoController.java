@@ -77,6 +77,7 @@ public class FeedbackinfoController extends BaseController
     @PostMapping
     public AjaxResult add(@RequestBody Feedbackinfo feedbackinfo)
     {
+        System.err.println(feedbackinfo);
         return toAjax(feedbackinfoService.insertFeedbackinfo(feedbackinfo));
     }
 
@@ -104,10 +105,9 @@ public class FeedbackinfoController extends BaseController
 
 
     // 查询历史信息用的接口
-    @GetMapping("/list/{consultationFormId}")
-    public TableDataInfo getListInfoWithRole(@PathVariable("consultationFormId") Long consultationFormId){
-        System.err.println(feedbackinfoService.getListInfoWithRole(consultationFormId));
-        return getDataTable(feedbackinfoService.getListInfoWithRole(consultationFormId));
-    }
+//    @GetMapping("/list/{consultationFormId}")
+//    public TableDataInfo getListInfoWithRole(@PathVariable("consultationFormId") Long consultationFormId){
+//        return getDataTable(feedbackinfoService.getListInfoWithRolePE(consultationFormId));
+//    }
 
 }

@@ -62,6 +62,13 @@ public interface IFeedbackinfoService
 
 
 
-    // 查询历史信息集合搭配 role
-    public List<FeedbackinfoWithRole> getListInfoWithRole(Long consultationFormId );
+    // 查询移动端历史信息集合搭配 role
+    public List<FeedbackinfoWithRole> getListInfoWithRolePE(Long consultationFormId );
+
+
+    // 查询管理端历史信息集合搭配 role
+    public List<FeedbackinfoWithRole> getListInfoWithRolePC(Long consultationFormId );
+
+    // 获得咨询历史并排序的方法
+    // public List<FeedbackinfoWithRole> egtListInfoWithRole(Long consultationFormId);
 }

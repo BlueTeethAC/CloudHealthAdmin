@@ -1,5 +1,6 @@
 package com.LW1.healthConsult.feedBackInfo.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.LW1.healthConsult.feedBackInfo.domain.FeedbackinfoWithRole;
@@ -94,9 +95,16 @@ public class FeedbackinfoServiceImpl implements IFeedbackinfoService
     }
 
 
-    // 查询历史信息集合搭配 role
+    // 查询移动端历史信息集合搭配 role
     @Override
-    public List<FeedbackinfoWithRole> getListInfoWithRole(Long consultationFormId) {
-        return feedbackinfoMapper.getListInfoWithRole(consultationFormId);
+    public List<FeedbackinfoWithRole> getListInfoWithRolePE(Long consultationFormId) {
+        return feedbackinfoMapper.getListInfoWithRolePE(consultationFormId);
     }
+
+    // 查询管理端历史信息集合搭配 role
+    @Override
+    public List<FeedbackinfoWithRole> getListInfoWithRolePC(Long consultationFormId) {
+        return feedbackinfoMapper.getListInfoWithRolePC(consultationFormId);
+    }
+
 }
