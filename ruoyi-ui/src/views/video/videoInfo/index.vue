@@ -24,7 +24,10 @@
       </el-form-item>
 
       <el-form-item label="视频分类" prop="videoCalssify">
-        <el-select v-model="queryParams.videoCalssify" placeholder="请选择视频分类">
+        <el-select
+          v-model="queryParams.videoCalssify"
+          placeholder="请选择视频分类"
+        >
           <el-option
             v-for="dict in videoClassify"
             :key="dict.classifyNum"
@@ -34,14 +37,14 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="所属系列" prop="videoSeries">
+      <!-- <el-form-item label="所属系列" prop="videoSeries">
         <el-input
           v-model="queryParams.videoSeries"
           placeholder="请输入视频所属系列"
           clearable
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="视频名称" prop="videoName">
         <el-input
           v-model="queryParams.videoName"
@@ -170,12 +173,17 @@
             :value="scope.row.videoCalssify"
           /> -->
           <span>
-            {{getVideoClassify(scope.row.videoCalssify)}}
+            {{ getVideoClassify(scope.row.videoCalssify) }}
           </span>
         </template>
       </el-table-column>
 
-      <el-table-column label="视频所属系列" align="center" prop="videoSeries" />
+      <el-table-column label="视频所属系列" align="center" prop="videoSeries">
+        <template slot-scope="scope">
+          <span>{{getMySeriesName(scope.row.videoSeries)}}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column label="视频名称" align="center" prop="videoName" />
       <el-table-column
         label="视频上传者id"
@@ -286,11 +294,18 @@
         </el-form-item>
 
         <el-form-item label="所属系列" prop="videoSeries">
-          <el-input
+          <el-select
             v-model="form.videoSeries"
             placeholder="请输入视频所属系列"
             disabled
-          />
+          >
+            <el-option
+              v-for="dict in seriesInfo"
+              :key="dict.seriesId"
+              :label="dict.seriesName"
+              :value="dict.seriesId"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="视频名称" prop="videoName">
           <el-input
@@ -375,11 +390,16 @@ import {
 } from "@/api/video/videoInfo";
 import { listVideoClassify } from "@/api/video/videoClassify";
 
+import { listMySeriesInfo } from "@/api/video/mySeriesInfo";
+
 export default {
   name: "VideoInfo",
   dicts: ["video_status", "video_model", "video_classify"],
   data() {
     return {
+      // 视频系列
+      seriesInfo: null,
+
       // 用于选择的视频分类
       videoClassify: null,
 
@@ -446,6 +466,9 @@ export default {
   },
   created() {
     this.getList();
+
+    // 获得 视频系列
+    this.getMySeriesInfo();
 
     // 获得 视频分类
     listVideoClassify().then((res) => {
@@ -595,6 +618,26 @@ export default {
       this.videoClassify.forEach((element) => {
         if (element.classifyNum == keyValue) {
           resultName = element.classifyName;
+        }
+      });
+
+      return resultName;
+    },
+
+    // 查询 视频所属系列
+    getMySeriesInfo() {
+      listMySeriesInfo().then((res) => {
+        this.seriesInfo = res.rows;
+      });
+    },
+
+    // 获得系列名称的方法
+    getMySeriesName(seriesId) {
+      let resultName = "无";
+
+      this.seriesInfo.forEach((element) => {
+        if (element.seriesId == seriesId) {
+          resultName = element.seriesName;
         }
       });
 
