@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.LW1.booking.booking.mapper.ChBookingMapper">
+    
+    <resultMap type="ChBooking" id="ChBookingResult">
+        <result property="infoId"    column="info_id"    />
+        <result property="userInfoId"    column="user_info_id"    />
+        <result property="infoTime"    column="info_time"    />
+        <result property="bookingTime"    column="booking_time"    />
+        <result property="targetUserId"    column="target_user_id"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectChBookingVo">
+        select info_id, user_info_id, info_time, booking_time, target_user_id, status from ch_booking
+    </sql>
+
+    <select id="selectChBookingList" parameterType="ChBooking" resultMap="ChBookingResult">
+        <include refid="selectChBookingVo"/>
+        <where>  
+            <if test="infoId != null "> and info_id = #{infoId}</if>
+            <if test="userInfoId != null "> and user_info_id = #{userInfoId}</if>
+            <if test="infoTime != null "> and info_time = #{infoTime}</if>
+            <if test="bookingTime != null "> and booking_time = #{bookingTime}</if>
+            <if test="targetUserId != null "> and target_user_id = #{targetUserId}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectChBookingByInfoId" parameterType="Long" resultMap="ChBookingResult">
+        <include refid="selectChBookingVo"/>
+        where info_id = #{infoId}
+    </select>
+        
+    <insert id="insertChBooking" parameterType="ChBooking" useGeneratedKeys="true" keyProperty="infoId">
+        insert into ch_booking
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userInfoId != null">user_info_id,</if>
+            <if test="infoTime != null">info_time,</if>
+            <if test="bookingTime != null">booking_time,</if>
+            <if test="targetUserId != null">target_user_id,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userInfoId != null">#{userInfoId},</if>
+            <if test="infoTime != null">#{infoTime},</if>
+            <if test="bookingTime != null">#{bookingTime},</if>
+            <if test="targetUserId != null">#{targetUserId},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateChBooking" parameterType="ChBooking">
+        update ch_booking
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userInfoId != null">user_info_id = #{userInfoId},</if>
+            <if test="infoTime != null">info_time = #{infoTime},</if>
+            <if test="bookingTime != null">booking_time = #{bookingTime},</if>
+            <if test="targetUserId != null">target_user_id = #{targetUserId},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where info_id = #{infoId}
+    </update>
+
+    <delete id="deleteChBookingByInfoId" parameterType="Long">
+        delete from ch_booking where info_id = #{infoId}
+    </delete>
+
+    <delete id="deleteChBookingByInfoIds" parameterType="String">
+        delete from ch_booking where info_id in 
+        <foreach item="infoId" collection="array" open="(" separator="," close=")">
+            #{infoId}
+        </foreach>
+    </delete>
+</mapper>
