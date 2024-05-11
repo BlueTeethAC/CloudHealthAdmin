@@ -49,7 +49,7 @@ public class ChBookingController extends BaseController
     /**
      * 导出私教，健身房预约列表
      */
-    @PreAuthorize("@ss.hasPermi('booking:booking:export')")
+    // @PreAuthorize("@ss.hasPermi('booking:booking:export')")
     @Log(title = "私教，健身房预约", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ChBooking chBooking)
@@ -62,7 +62,7 @@ public class ChBookingController extends BaseController
     /**
      * 获取私教，健身房预约详细信息
      */
-    @PreAuthorize("@ss.hasPermi('booking:booking:query')")
+    // @PreAuthorize("@ss.hasPermi('booking:booking:query')")
     @GetMapping(value = "/{infoId}")
     public AjaxResult getInfo(@PathVariable("infoId") Long infoId)
     {
@@ -72,7 +72,7 @@ public class ChBookingController extends BaseController
     /**
      * 新增私教，健身房预约
      */
-    @PreAuthorize("@ss.hasPermi('booking:booking:add')")
+    // @PreAuthorize("@ss.hasPermi('booking:booking:add')")
     @Log(title = "私教，健身房预约", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ChBooking chBooking)
@@ -83,7 +83,7 @@ public class ChBookingController extends BaseController
     /**
      * 修改私教，健身房预约
      */
-    @PreAuthorize("@ss.hasPermi('booking:booking:edit')")
+    // @PreAuthorize("@ss.hasPermi('booking:booking:edit')")
     @Log(title = "私教，健身房预约", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ChBooking chBooking)
@@ -94,7 +94,7 @@ public class ChBookingController extends BaseController
     /**
      * 删除私教，健身房预约
      */
-    @PreAuthorize("@ss.hasPermi('booking:booking:remove')")
+    // @PreAuthorize("@ss.hasPermi('booking:booking:remove')")
     @Log(title = "私教，健身房预约", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{infoIds}")
     public AjaxResult remove(@PathVariable Long[] infoIds)
